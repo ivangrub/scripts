@@ -117,11 +117,13 @@ if args.r is '-':
 	outbam = pys.Samfile('%s.bam' % args.o,'wb',template = infile)
 convbam = pys.Samfile('%s_converted.bam' % args.o,'wb',template = conv)
 
+print 'Building headers'
 headerlist = conv.header['SQ']
 chr_tuple = infile.references
 chrindex = head2chr(headerlist)
 binning = offset(headerlist)
 
+print 'Binning the alignments'
 binheader = set()
 for line in infile:
 	if line.is_unmapped:
