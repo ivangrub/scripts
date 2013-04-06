@@ -16,7 +16,6 @@ def gen2bin(read,chrlist,headers,bin,chrt,headlist):
 		x = headers[chrst+ind]['SN'].split('!')
 		y = chrst+ind
 	
-	
 	off = read.pos - int(x[2])+1
 	k = 1
 	while chrom != x[1] or off < 0:
@@ -48,7 +47,7 @@ def MakeHeader(binheader,binsize):
 	header['HD'] = {'VN':'1.0'}
 	index = 0
 	for i in binheader:
-		ref.append({'LN':int(binsize)-1, 'SN':i})
+		ref.append({'LN':int(binsize)-1,'SN':i})
 		nh[i] = index
 		index += 1
 	header['SQ'] = ref
@@ -117,10 +116,13 @@ if args.r is '-':
 	outbam = pys.Samfile('%s.bam' % args.o,'wb',template = infile)
 convbam = pys.Samfile('%s_converted.bam' % args.o,'wb',template = conv)
 
-print 'Building headers'
 headerlist = conv.header['SQ']
 chr_tuple = infile.references
+
+print 'Building conversion headers'
 chrindex = head2chr(headerlist)
+
+print 'Getting the offset'
 binning = offset(headerlist)
 
 print 'Binning the alignments'
@@ -136,8 +138,10 @@ for line in infile:
 convbam.close()
 conv.close()
 conv = pys.Samfile('%s_converted.bam' % args.o,'rb')
+
 print 'Making new header'
 newheader, headdict = MakeHeader(binheader,args.b)
+
 print 'Trimming and updating tid'
 TrimBAM(conv,headerlist,newheader,headdict)
 conv.close()
