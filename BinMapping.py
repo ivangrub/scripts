@@ -8,33 +8,39 @@ def gen2bin(infile,read,chrlist,headers,bin,headlist):
 	chrom = infile.getrname(read.tid)
 	ind = int(round(read.pos/float(bin-1)))
 	chrst = chrlist[chrom]
-	if chrst+ind >= len(headers):
-		x = headers[len(headers)-1]['SN'].split('!')
-		y = len(headers)-1
-	else:
-		x = headers[chrst+ind]['SN'].split('!')
+
+	try:
+		name = convbam.getrname(chrst+ind)
+		x = name.split('!')
 		y = chrst+ind
+	except TypeError:
+		length = convbam.nreferences
+		name = convbam.getrname(length -1)
+		x = name.split('!')
+		y = length-1
 	
 	off = read.pos - int(x[2])+1
 	k = 1
+	
 	while chrom != x[1] or off < 0:
-		x = headers[y-k]['SN'].split('!')
+		name = convbam.getrname(y-k)
+		x = name.split('!')
 		off = read.pos - int(x[2]) + 1
 		k += 1
 
-	if off > int(headers[y-k+1]['LN']) or off < 0:
+	if off > int(int(args.b) - 1) or off < 0:
 		print 'ERROR',read
 
 	read.pos = off
-	read.tid = y-k+1
+	read.tid = convbam.gettid(name)
 	indice = [-1,0,1]
 	for ran in indice:
 		try:
-			if (headers[y-k+1+ran]['SN'] not in headlist):
-				headlist.add(headers[y-k+1+ran]['SN'])
+			if (convbam.getrname(y-k+1+ran) not in headlist):
+				headlist.add(convbam.getrname(y-k+1+ran))
 			else:
 				continue
-		except IndexError:
+		except TypeError:
 			continue
 
 	return read,headlist	
@@ -116,7 +122,11 @@ if args.r is '-':
 	outbam = pys.Samfile('%s.bam' % args.o,'wb',template = infile)
 convbam = pys.Samfile('%s_converted.bam' % args.o,'wb',header = conv)
 
-headerlist = conv.header['SQ']
+bindict = {}
+index = 0
+for ref in conv.header['SQ']:
+	bindict[ref["SN"]] = index
+	index += 1
 
 print 'Building conversion headers'
 chrindex = head2chr(headerlist)
@@ -131,7 +141,7 @@ for line in infile:
 		continue
 	if args.r is '-':
 		outbam.write(line)
-	readmod,binheader = gen2bin(infile,line,chrindex,headerlist,binning,binheader)
+	readmod,binheader = gen2bin(infile,line,chrindex,bindict,binning,binheader)
 	convbam.write(readmod)
 
 convbam.close()

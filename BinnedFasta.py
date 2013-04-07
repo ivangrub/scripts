@@ -85,7 +85,7 @@ for key in chr.keys():
 	
 	print 'On %s' % key
 	
-	for j in range(len(left)):
+	for j in xrange(len(left)):
 		bin = 'bin%d!%s!%d!%d' % (k,key,left[j],right[j])
 		ref.append({'LN':int(args.b)-1,'SN':bin})
 		print_fasta(bin,chr[key])
