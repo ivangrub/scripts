@@ -4,8 +4,9 @@ import pysam as pys
 import argparse
 import os
 
-def gen2bin(infile,read,chrlist,headers,bin,headlist):
-	chrom = infile.getrname(read.tid)
+def gen2bin(read,chrlist,headers,bin,chrt):
+	s = read.rname
+	chrom = chrt[s]
 	ind = int(round(read.pos/float(bin-1)))
 	chrst = chrlist[chrom]
 	if chrst+ind >= len(headers):
@@ -15,54 +16,24 @@ def gen2bin(infile,read,chrlist,headers,bin,headlist):
 		x = headers[chrst+ind]['SN'].split('!')
 		y = chrst+ind
 	
+	
 	off = read.pos - int(x[2])+1
 	k = 1
 	while chrom != x[1] or off < 0:
+		#print read.pos,x
 		x = headers[y-k]['SN'].split('!')
 		off = read.pos - int(x[2]) + 1
 		k += 1
 
-	if off > int(headers[y-k+1]['LN']) or off < 0:
+	if off > int(headers[y-k]['LN']) or off < 0:
 		print 'ERROR',read
 
 	read.pos = off
 	read.tid = y-k+1
-	indice = [-1,0,1]
-	for ran in indice:
-		try:
-			if (headers[y-k+1+ran]['SN'] not in headlist):
-				headlist.add(headers[y-k+1+ran]['SN'])
-			else:
-				continue
-		except IndexError:
-			continue
-
-	return read,headlist	
-
-def MakeHeader(binheader,binsize):
-	ref = []
-	header = {}
-	nh = {}
-	header['HD'] = {'VN':'1.0'}
-	index = 0
-	for i in binheader:
-		ref.append({'LN':int(binsize)-1,'SN':i})
-		nh[i] = index
-		index += 1
-	header['SQ'] = ref
-	return header,nh	
-
-def TrimBAM(conv,oheader,nheader,translate):
-	trimmed = pys.Samfile('%s_trimmed.bam' % args.o,'wb',header=nheader)
-	for read in conv:
-		binid = oheader[read.tid]["SN"]
-		index = translate[binid]
-		read.tid = index
-		trimmed.write(read)
-	trimmed.close()
-
+	return read	
+	
+	
 def head2chr(header):
-	print 'Getting header index'
 	chr = {}
 	i = 0
 	j = 0
@@ -114,41 +85,24 @@ else:
 conv = pys.Samfile('%s/Header_%s_%s_%s.sam' % (path,args.g,args.b,args.l),'r')
 if args.r is '-':
 	outbam = pys.Samfile('%s.bam' % args.o,'wb',template = infile)
-convbam = pys.Samfile('%s_converted.bam' % args.o,'wb',header = conv)
+convbam = pys.Samfile('%s_converted.bam' % args.o,'wb',template = conv)
 
 headerlist = conv.header['SQ']
-
-print 'Building conversion headers'
+chr_tuple = infile.references
 chrindex = head2chr(headerlist)
-
-print 'Getting the offset'
 binning = offset(headerlist)
 
-print 'Binning the alignments'
-binheader = set()
 for line in infile:
 	if line.is_unmapped:
 		continue
 	if args.r is '-':
 		outbam.write(line)
-	readmod,binheader = gen2bin(infile,line,chrindex,headerlist,binning,binheader)
+	readmod = gen2bin(line,chrindex,headerlist,binning,chr_tuple)
 	convbam.write(readmod)
-
-convbam.close()
-conv.close()
-conv = pys.Samfile('%s_converted.bam' % args.o,'rb')
-
-print 'Making new header'
-newheader, headdict = MakeHeader(binheader,args.b)
-
-print 'Trimming and updating tid'
-TrimBAM(conv,headerlist,newheader,headdict)
-conv.close()
 
 if args.r is '-':
 	outbam.close()
-
+convbam.close()
 infile.close()
-
-
+conv.close()
 
