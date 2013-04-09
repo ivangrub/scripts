@@ -85,7 +85,7 @@ for key in chr.keys():
 	
 	print 'On %s' % key
 	
-	for j in range(len(left)):
+	for j in xrange(len(left)):
 		bin = 'bin%d!%s!%d!%d' % (k,key,left[j],right[j])
 		header.write('@SQ\tSN:%s\tLN:%d\n' % (bin,int(args.b)-1))
 		print_fasta(bin,chr[key])
