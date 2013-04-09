@@ -4,11 +4,11 @@ import pysam as pys
 import argparse
 import os
 
-def gen2bin(infile,read,chrlist,bin,headlist):
+def gen2bin(infile,convbam,read,chrlist,bin,headlist,cc):
 	chrom = infile.getrname(read.tid)
 	ind = int(round(read.pos/float(bin-1)))
-	chrst = chrlist[chrom]
-
+	chrst = int(chrlist[chrom])
+	
 	try:
 		name = convbam.getrname(chrst+ind)
 		x = name.split('!')
@@ -44,7 +44,11 @@ def gen2bin(infile,read,chrlist,bin,headlist):
 		except TypeError:
 			continue
 
-	return read,headlist	
+	if (cc % 1000 == 0):
+		print '%d reads done' % cc
+
+	convbam.write(read)	
+	return headlist	
 
 def MakeHeader(binheader,binsize):
 	ref = []
@@ -144,13 +148,14 @@ print 'Binning the alignments'
 binheader = open('newheaders.txt','w')
 binheader.write('@HD\tVN:1.0\n')
 headlist = set()
+count = 0
 for line in infile:
 	if line.is_unmapped:
 		continue
 	if args.r is '-':
 		outbam.write(line)
-	readmod,headlist = gen2bin(infile,line,chrindex,binning,headlist)
-	convbam.write(readmod)
+	headlist = gen2bin(infile,convbam,line,chrindex,binning,headlist,count)
+	count += 1
 
 convbam.close()
 conv.close()
