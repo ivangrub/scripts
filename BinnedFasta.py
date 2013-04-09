@@ -79,18 +79,21 @@ k = 0
 header = open('%s/Header_%s_%s_%d.sam' % (direct,args.g,args.b,length),'w')
 header.write('@HD\tVN:1.0\n')
 ref = []
+
+chrindex = open('%s/chrindex_%s_%s_%d.txt' % (direct,args.g,args.b,length),'w')
 for key in chr.keys():
 	left = np.arange(1,len(chr[key]),int(args.b)-length)
 	right = np.arange(int(args.b),len(chr[key])+int(args.b),int(args.b)-length)
 	
 	print 'On %s' % key
-	
+	chrindex.write('%s\t%d\n' % (key,k))
 	for j in xrange(len(left)):
 		bin = 'bin%d!%s!%d!%d' % (k,key,left[j],right[j])
 		header.write('@SQ\tSN:%s\tLN:%d\n' % (bin,int(args.b)-1))
 		print_fasta(bin,chr[key])
 		k += 1
-		
+
+chrindex.close()		
 header.close()
 NEWFasta.close()			
 											

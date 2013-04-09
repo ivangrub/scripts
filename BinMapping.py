@@ -4,7 +4,7 @@ import pysam as pys
 import argparse
 import os
 
-def gen2bin(infile,read,chrlist,headers,bin,headlist):
+def gen2bin(infile,read,chrlist,bin,headlist):
 	chrom = infile.getrname(read.tid)
 	ind = int(round(read.pos/float(bin-1)))
 	chrst = chrlist[chrom]
@@ -68,12 +68,12 @@ def TrimBAM(conv,nheader):
 		trimmed.write(read)
 	trimmed.close()
 
-def head2chr(header):
+def head2chr(conv):
 	print 'Getting header index'
 	chr = {}
 	i = 0
 	j = 0
-	for line in header:
+	for line in conv.header["SQ"]:
 		x = line['SN']
 		s = x.strip().split('!')
 		if i == 0:
@@ -92,17 +92,15 @@ def head2chr(header):
 	chr[chrom] = i - j
 	return chr
 
-def offset(header):
-	i = 0
-	for line in header:	
-		x = line['SN']
-		s = x.strip().split('!')
-		if i == 0:
-			start = int(s[2])
-			i = 1
-		else:
-			off = int(s[2]) - start + 1
-			return off
+def offset(conv):
+	n1 = conv.getrname(2)
+	x = n1.split('!')
+	start = int(x[2])
+	n2 = conv.getrname(3)
+	x = n2.split('!')
+	end = int(x[2])
+	off = end - start + 1
+	return off
 
 parser = argparse.ArgumentParser(description='Put mapped reads into BAM format in chromosomal and express coordinates')
 parser.add_argument('-r',help ='Read file name. SAM/BAM format.',default = '')
@@ -118,22 +116,29 @@ if args.r is '-':
 else:
 	infile = pys.Samfile(args.r,'rb')
 
+print 'Load binned header'
 conv = pys.Samfile('%s/Header_%s_%s_%s.sam' % (path,args.g,args.b,args.l),'r')
 if args.r is '-':
 	outbam = pys.Samfile('%s.bam' % args.o,'wb',template = infile)
-convbam = pys.Samfile('%s_converted.bam' % args.o,'wb',header = conv)
 
-bindict = {}
-index = 0
-for ref in conv.header['SQ']:
-	bindict[ref["SN"]] = index
-	index += 1
+print 'Create template for converted BAM'
+convbam = pys.Samfile('%s_converted.bam' % args.o,'wb',template = conv)
+
+#bindict = {}
+#index = 0
+#for ref in conv.header['SQ']:
+#	bindict[ref["SN"]] = index
+#	index += 1
 
 print 'Building conversion headers'
-chrindex = head2chr(headerlist)
-
+chrind = open('%s/chrindex_%s_%s_%s.txt' % (path,args.g,args.b,args.l),'r')
+chrindex = {}
+for line in chrind:
+	s = line.strip().split('\t')
+	chrindex[s[0]] = s[1]
+chrind.close()
 print 'Getting the offset'
-binning = offset(headerlist)
+binning = offset(conv)
 
 print 'Binning the alignments'
 binheader = open('newheaders.txt','w')
@@ -144,7 +149,7 @@ for line in infile:
 		continue
 	if args.r is '-':
 		outbam.write(line)
-	readmod,headlist = gen2bin(infile,line,chrindex,bindict,binning,headlist)
+	readmod,headlist = gen2bin(infile,line,chrindex,binning,headlist)
 	convbam.write(readmod)
 
 convbam.close()
