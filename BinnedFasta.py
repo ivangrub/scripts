@@ -76,8 +76,8 @@ MakeSAMHeader(chr,genome[0],direct)
 
 # Bin the sequences into smaller fasta format sequences which will be used to create the bowtie index
 k = 0
-header = {}
-header['HD'] = {'VN':'1.0'}
+header = open('%s/Header_%s_%s_%d.txt' % (direct,args.g,args.b,length),'w')
+header.write('@HD\tVN:1.0\n')
 ref = []
 for key in chr.keys():
 	left = np.arange(1,len(chr[key]),int(args.b)-length)
@@ -85,14 +85,12 @@ for key in chr.keys():
 	
 	print 'On %s' % key
 	
-	for j in xrange(len(left)):
+	for j in range(len(left)):
 		bin = 'bin%d!%s!%d!%d' % (k,key,left[j],right[j])
-		ref.append({'LN':int(args.b)-1,'SN':bin})
+		header.write('@SQ\tSN:%s\tLN:%d\n' % (bin,int(args.b)-1))
 		print_fasta(bin,chr[key])
 		k += 1
 		
-header['SQ'] = ref
-samheader = pys.Samfile('%s/Header_%s_%s_%d.sam' % (direct,args.g,args.b,length),'wh', header = header)
-samheader.close()
+header.close()
 NEWFasta.close()			
 											
