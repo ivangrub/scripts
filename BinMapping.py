@@ -38,6 +38,7 @@ def gen2bin(infile,read,chrlist,headers,bin,headlist):
 		try:
 			if (convbam.getrname(y-k+1+ran) not in headlist):
 				headlist.add(convbam.getrname(y-k+1+ran))
+				binheader.write('@SQ\tSN:%s\tLN:%d\n' % (convbam.getrname(y-k+1+ran),int(args.b)-1))
 			else:
 				continue
 		except TypeError:
@@ -58,11 +59,11 @@ def MakeHeader(binheader,binsize):
 	header['SQ'] = ref
 	return header,nh	
 
-def TrimBAM(conv,oheader,nheader,translate):
-	trimmed = pys.Samfile('%s_trimmed.bam' % args.o,'wb',header=nheader)
+def TrimBAM(conv,nheader):
+	trimmed = pys.Samfile('%s_trimmed.bam' % args.o,'wb',template=nheader)
 	for read in conv:
-		binid = oheader[read.tid]["SN"]
-		index = translate[binid]
+		binid = conv.getrname(read.tid)
+		index = trimmed.gettid(binid)
 		read.tid = index
 		trimmed.write(read)
 	trimmed.close()
@@ -135,26 +136,31 @@ print 'Getting the offset'
 binning = offset(headerlist)
 
 print 'Binning the alignments'
-binheader = set()
+binheader = open('newheaders.txt','w')
+binheader.write('@HD\tVN:1.0\n')
+headlist = set()
 for line in infile:
 	if line.is_unmapped:
 		continue
 	if args.r is '-':
 		outbam.write(line)
-	readmod,binheader = gen2bin(infile,line,chrindex,bindict,binning,binheader)
+	readmod,headlist = gen2bin(infile,line,chrindex,bindict,binning,headlist)
 	convbam.write(readmod)
 
 convbam.close()
 conv.close()
 conv = pys.Samfile('%s_converted.bam' % args.o,'rb')
 
+binheader.close()
 print 'Making new header'
-newheader, headdict = MakeHeader(binheader,args.b)
+newheader = pys.Samfile('newheaders.txt','r')
+#newheader = pys.Samfile('')
+#newheader, headdict = MakeHeader(binheader,args.b)
 
 print 'Trimming and updating tid'
-TrimBAM(conv,headerlist,newheader,headdict)
+TrimBAM(conv,newheader)
 conv.close()
-
+newheader.close()
 if args.r is '-':
 	outbam.close()
 

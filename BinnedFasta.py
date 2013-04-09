@@ -76,7 +76,7 @@ MakeSAMHeader(chr,genome[0],direct)
 
 # Bin the sequences into smaller fasta format sequences which will be used to create the bowtie index
 k = 0
-header = open('%s/Header_%s_%s_%d.txt' % (direct,args.g,args.b,length),'w')
+header = open('%s/Header_%s_%s_%d.sam' % (direct,args.g,args.b,length),'w')
 header.write('@HD\tVN:1.0\n')
 ref = []
 for key in chr.keys():
