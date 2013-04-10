@@ -50,19 +50,6 @@ def gen2bin(infile,convbam,read,chrlist,bin,headlist,cc):
 	convbam.write(read)	
 	return headlist	
 
-def MakeHeader(binheader,binsize):
-	ref = []
-	header = {}
-	nh = {}
-	header['HD'] = {'VN':'1.0'}
-	index = 0
-	for i in binheader:
-		ref.append({'LN':int(binsize)-1,'SN':i})
-		nh[i] = index
-		index += 1
-	header['SQ'] = ref
-	return header,nh	
-
 def TrimBAM(conv,nheader):
 	trimmed = pys.Samfile('%s_trimmed.bam' % args.o,'wb',template=nheader)
 	for read in conv:
@@ -71,30 +58,6 @@ def TrimBAM(conv,nheader):
 		read.tid = index
 		trimmed.write(read)
 	trimmed.close()
-
-def head2chr(conv):
-	print 'Getting header index'
-	chr = {}
-	i = 0
-	j = 0
-	for line in conv.header["SQ"]:
-		x = line['SN']
-		s = x.strip().split('!')
-		if i == 0:
-			chrom = s[1]
-			chr[chrom] = i
-			i += 1
-		else:
-			if s[1] == chrom:
-				i += 1
-				j += 1
-			else:
-				chrom = s[1]
-				chr[chrom] = i
-				i += 1
-				j = 1
-	chr[chrom] = i - j
-	return chr
 
 def offset(conv):
 	n1 = conv.getrname(2)
@@ -144,7 +107,7 @@ chrind.close()
 print 'Getting the offset'
 binning = offset(conv)
 
-print 'Binning the alignments'
+print 'Binning the alignments - Might take a long time'
 binheader = open('newheaders.txt','w')
 binheader.write('@HD\tVN:1.0\n')
 headlist = set()
@@ -164,8 +127,6 @@ conv = pys.Samfile('%s_converted.bam' % args.o,'rb')
 binheader.close()
 print 'Making new header'
 newheader = pys.Samfile('newheaders.txt','r')
-#newheader = pys.Samfile('')
-#newheader, headdict = MakeHeader(binheader,args.b)
 
 print 'Trimming and updating tid'
 TrimBAM(conv,newheader)
