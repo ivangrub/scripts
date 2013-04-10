@@ -29,7 +29,7 @@ def ReadLength(file):
 	for x in SeqIO.parse(file,'fastq'):
 		return len(x.seq)
 	
-def print_fasta(pos,seq):
+def print_fasta(pos,seq,header,count):
 	"""Print the new FASTA file that will be used to build the bowtie index and be the target sequence in eXpress"""
 	
 	binnum = pos.split('!')
@@ -42,11 +42,15 @@ def print_fasta(pos,seq):
 		en = coor2-coor1
 		s2 = s + 'N'*(en-m)
 		if s2.count("N") != (coor2-coor1):
+			header.write('@SQ\tSN:%s\tLN:%d\n' % (pos,int(args.b)-1))
 			NEWFasta.write('>%s\n%s\n\n' % (pos, s2))
+			count += 1
 	else:
 		if s.count("N") != (coor2-coor1):
+			header.write('@SQ\tSN:%s\tLN:%d\n' % (pos,int(args.b)-1))
 			NEWFasta.write('>%s\n%s\n\n' % (pos, s))
-
+			count += 1
+	return count		
 parser = argparse.ArgumentParser(description='Create a genome fasta file that will be used to create the bowtie index and used as an input eXpress.')
 parser.add_argument('-g',help = 'Enter the name of the fasta file. The default is mm9.fa',default = 'mm9.fa')
 parser.add_argument('-f',help = 'Input the fastq file that will be used by bowtie.',default = None)
@@ -89,9 +93,8 @@ for key in chr.keys():
 	chrindex.write('%s\t%d\n' % (key,k))
 	for j in xrange(len(left)):
 		bin = 'bin%d!%s!%d!%d' % (k,key,left[j],right[j])
-		header.write('@SQ\tSN:%s\tLN:%d\n' % (bin,int(args.b)-1))
-		print_fasta(bin,chr[key])
-		k += 1
+		k = print_fasta(bin,chr[key],header,k)
+		
 
 chrindex.close()		
 header.close()

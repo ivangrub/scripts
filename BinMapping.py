@@ -41,10 +41,10 @@ def gen2bin(infile,convbam,read,chrlist,bin,headlist,cc):
 				binheader.write('@SQ\tSN:%s\tLN:%d\n' % (convbam.getrname(y-k+1+ran),int(args.b)-1))
 			else:
 				continue
-		except TypeError:
+		except ValueError:
 			continue
 
-	if (cc % 1000 == 0):
+	if (cc % 1000000 == 0):
 		print '%d reads done' % cc
 
 	convbam.write(read)	
