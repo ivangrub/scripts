@@ -34,8 +34,13 @@ for i = 1:length(IP)
 end
 
 fid = fopen('Testes_geneChIP.txt','w');
+fprintf(fid,'%s\t%s\t%s\t%s\t%s\t%s\t%s\t%s\t%s\t%s\t%s\t%s\t%s\t%s\t%s\t%s\t%s\n',(sprintf('%s_promoter',IP{1}),sprintf('%s_proximal',IP{1}),...
+	sprintf('%s_distal',IP{1}),sprintf('%s_promoter',IP{2}),sprintf('%s_proximal',IP{2}),sprintf('%s_distal',IP{2}),...
+	sprintf('%s_promoter',IP{3}),sprintf('%s_proximal',IP{3}),sprintf('%s_distal',IP{3}),...
+	sprintf('%s_promoter',IP{4}),sprintf('%s_proximal',IP{2}),sprintf('%s_distal',IP{4}),...
+	sprintf('%s_promoter',IP{5}),sprintf('%s_proximal',IP{2}),sprintf('%s_distal',IP{5}))
 for i = 1:length(enrich)
-	fprintf(fid,'%s\t%s\t%d\t%d\t%d\t%d\t%d\t%d\t%d\t%d\t%d\t%d\t%d\t%d\t%d\t%d\t%d\\n',(enrich(i,1),enrich(i,2),enrich(i,3),...
+	fprintf(fid,'%s\t%s\t%d\t%d\t%d\t%d\t%d\t%d\t%d\t%d\t%d\t%d\t%d\t%d\t%d\t%d\t%d\n',(enrich(i,1),enrich(i,2),enrich(i,3),...
 		enrich(i,4),enrich(i,5),enrich(i,6),enrich(i,7),enrich(i,8),enrich(i,9),enrich(i,9),enrich(i,10),enrich(i,11),enrich(i,12),...
 		enrich(i,13),enrich(i,14));
 end
@@ -52,10 +57,13 @@ for i = 1:length(IP)
 		coordind = ceil(ind*50);
 		chromind = peak(j,1) == known(:,1);
 		chrknown = known(chromind,:)
+		gidknown = geneid(chromind,:)
+
 		midpoint = mean(peak(2),peak(3));
 		promoter = midpoint >= chrknown(:,2)-500 | midpoint <= chrknown(:,2)+500;
 		proximal = midpoint >= chrknown(:,2)-10000 | midpoint <= chrknown(:,2)+10000;
 		distal = midpoint >= chrknown(:,2)-50000 | midpoint <= chrknown(:,2)+50000;
+
 		if sum(promoter) > 0
 			region = 'promoter';
 		else if sum(proximal) > 0
@@ -72,8 +80,9 @@ for i = 1:length(IP)
 		genelist = cell(1,3);
 		genedist = zeros(1,3);
 		[index,distance] = sort(abs(midpoint - chrknown(:,2)));
+
 		for closgene = 1:3
-			genelist{closgene} = chrknown(index(closgene),1);
+			genelist{closgene} = gidknown(index(closgene),1);
 			genedist(closgene) = distance(closgene);
 			tommytssdistance = midpoint - chrknown(index(closgene),2);
 			tommytesdistance  = midpoint - chrknown(index(closgene),3);
