@@ -58,23 +58,24 @@ fclose(fid);clear fid
 for i = 1:length(IP)
 	ip = load(sprintf('%s.fit.mat',IP{i}));
 	fid = fopen(sprintf('%s.filtered.peaks.bed',IP{i}));
-	peak = textscan(fid,'%s%d%d','HeaderLines',1,'delimiter','\t');
+	peaks = textscan(fid,'%s%d%d','delimiter','\t');
 	fclose(fid);clear fid;
-	otherIP = find(IP(~IP{i}));
-	fid = fopen(sprintf('%s_peakcentric.txt',IP{i}));
-	fprintf(fid,'%s\t%s\t%s\t%s\t%s\t%s\t%s\t%s\t%s\t%s\t%s\t%s\t%s\t%s\t%s\n','Chromosome','Left','Right','Cis-Reg',...
-		'Closest Gene','Distance','2nd Closest','Distance','3rd Closest','Distance',IP{otherIP(1)},...
-		IP{otherIP(2)},IP{otherIP(3)},IP{otherIP(4)},IP{otherIP(5)});
+	otherIP = find(~strcmp(IP{i},IP));
+	fid = fopen(sprintf('%s_peakcentric.txt',IP{i}),'w');
+	fprintf(fid,'%s\t%s\t%s\t%s\t%s\t%s\t%s\t%s\t%s\t%s\t%s\t%s\t%s\t%s\t%s\t%s\n','Chromosome','Left','Right','Cis-Reg','Closest TSS','Distance',...
+		'Closest Gene','Distance','2nd Closest','Distance','3rd Closest','Distance',char(IP{otherIP(1)}),...
+		char(IP{otherIP(2)}),char(IP{otherIP(3)}),char(IP{otherIP(4)}));
 		
 	maxenrich = zeros(1,length(IP)-1);
-	genesect = zeros(length(peak),length(IP)+4);
-	for j = 1:length(peak)
+	genesect = zeros(length(peaks),length(IP)+4);
+    peak = [peaks{2}(1:2:end),peaks{3}(1:2:end)];
+	for j = 1:length(peaks{1})
 		coordind = ceil(ind*50);
-		chromind = peak(j,1) == known(:,1);
+		chromind = strcmp(peaks{1,1}(j),genechrom(:,1));
 		chrknown = known(chromind,:);
 		gidknown = geneid(chromind,:);
 
-		midpoint = mean(peak(2),peak(3));
+		midpoint = mean(peak(1),peak(2));
 		promoter = midpoint >= chrknown(:,2)-500 | midpoint <= chrknown(:,2)+500;
 		proximal = midpoint >= chrknown(:,2)-10000 | midpoint <= chrknown(:,2)+10000;
 		distal = midpoint >= chrknown(:,2)-50000 | midpoint <= chrknown(:,2)+50000;
@@ -89,12 +90,12 @@ for i = 1:length(IP)
 			region = 'intergrenic';
 		end
 
-		[tssind,closesttss] = min(abs(midpoint - chrknown(:,2)));
-		tssgenename = chrknown(tssind,1);
+		[closesttss,tssind] = min(abs(midpoint - chrknown(:,2)));
+		tssgenename = gidknown{tssind};
 
 		genelist = cell(1,3);
 		genedist = zeros(1,3);
-		[index,distance] = sort(abs(midpoint - chrknown(:,2)));
+		[distance,index] = sort(abs(midpoint - chrknown(:,2)));
 
 		for closgene = 1:3
 			genelist{closgene} = gidknown(index(closgene),1);
@@ -110,9 +111,8 @@ for i = 1:length(IP)
 			end
 		end
 
-		range = ceil(peak(2)/50):ceil(peak(3)/50);
-		chrom = peak(j,1);
-		[ind,val] = max(ip(chrom,range));
+		range = ceil(peak(1)/50):ceil(peak(2)/50);
+		chrom = peaks{1,1}(j);
 
 		for k = 1:length(IPlist)
 			if ~strcmp(IP{i},IPlist{k})
@@ -123,8 +123,8 @@ for i = 1:length(IP)
 			maxenrich(k) = max(y.('Xfit').(chrom)(range));
 		end
 		
-		fprintf(fid,'%s\t%d\t%d\t%s\t%s\t%d\t%s\t%d\t%s\t%d\t%d\t%d\t%d\t%d\t%d\n',peak(j,1),peak(j,2),peak(j,3),region,char(genelist{1}),...
-			genedist(1),char(genelist{2}),genedist(2),char(genelist{3}),genedist(3),maxenrich(1),maxenrich(2),maxenrich(3),maxenrich(4),maxenrich(5));
+		fprintf(fid,'%s\t%d\t%d\t%s\t%s\t%s\t%s\t%d\t%s\t%d\t%s\t%d\t%d\t%d\t%d\t%d\n',peak(j,1),peak(j,2),peak(j,3),region,char(tssgenename{1}),num2str(closesttss),char(genelist{1}),...
+			genedist(1),char(genelist{2}),genedist(2),char(genelist{3}),genedist(3),maxenrich(1),maxenrich(2),maxenrich(3),maxenrich(4));
 		
 	end
 	fclose(fid);clear fid
