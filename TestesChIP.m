@@ -38,7 +38,7 @@ for i = 1:length(IP)
 end
 
 fid = fopen('Testes_geneChIP.txt','w');
-fprintf(fid,'%s\t%s\t%s\t%s\t%s\t%s\t%s\t%s\t%s\t%s\t%s\t%s\t%s\t%s\t%s\t%s\t%s\n','Gene ID','Gene Description',sprintf('%s_promoter',IP{1}),sprintf('%s_proximal',IP{1}),...
+fprintf(fid,'%s\t%s\t%s\t%s\t%s\t%s\t%s\t%s\t%s\t%s\t%s\t%s\t%s\t%s\n','Gene ID','Gene Description',sprintf('%s_promoter',IP{1}),sprintf('%s_proximal',IP{1}),...
 	sprintf('%s_distal',IP{1}),sprintf('%s_promoter',IP{2}),sprintf('%s_proximal',IP{2}),sprintf('%s_distal',IP{2}),...
 	sprintf('%s_promoter',IP{3}),sprintf('%s_proximal',IP{3}),sprintf('%s_distal',IP{3}),...
 	sprintf('%s_promoter',IP{4}),sprintf('%s_proximal',IP{4}),sprintf('%s_distal',IP{4}));
@@ -49,12 +49,12 @@ for i = 1:length(enrich)
     else
        genename = gidadesc(index,2);
     end
-	fprintf(fid,'%s\t%s\t%d\t%d\t%d\t%d\t%d\t%d\t%d\t%d\t%d\t%d\t%d\t%d\t%d\t%d\t%d\n',char(geneid{i}),char(genename),enrich(i,1),enrich(i,2),enrich(i,3),...
+	fprintf(fid,'%s\t%s\t%d\t%d\t%d\t%d\t%d\t%d\t%d\t%d\t%d\t%d\t%d\t%d\n',char(geneid{i}),char(genename),enrich(i,1),enrich(i,2),enrich(i,3),...
 		enrich(i,4),enrich(i,5),enrich(i,6),enrich(i,7),enrich(i,8),enrich(i,9),enrich(i,10),enrich(i,11),enrich(i,12));
 end
 fclose(fid);clear fid
 for i = 1:length(IP)
-	ip = eval(IP{i}); %load(sprintf('%s.mat',IP{i}));
+	ip = load(sprintf('%s.fit.mat',IP{i}));
 	fid = fopen(sprintf('%s.filtered.peaks.bed',IP{i}));
 	peak = textscan(fid,'%s%d%d','delimiter','\t');
 	fclose(fid);clear fid;
@@ -114,7 +114,7 @@ for i = 1:length(IP)
 
 		for k = 1:length(IPlist)
 			if ~strcmp(IP{i},IPlist{k})
-				y  = eval(IP{i}); %load(sprintf('%s.mat',IPlist{k}));
+				y  = load(sprintf('%s.fit.mat',IPlist{k}));
 			else 
 				continue
 			end
