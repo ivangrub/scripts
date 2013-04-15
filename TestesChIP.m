@@ -1,5 +1,5 @@
 
-IP = {'TAF7L' 'TBP' 'PolII' 'AR'};
+IP = {'TAF7L' 'TBP' 'PolII' 'TAF7' 'AR'};
 IPlist = IP;
 
 geneid = knownGene(:,1);
@@ -38,10 +38,11 @@ for i = 1:length(IP)
 end
 
 fid = fopen('Testes_geneChIP.txt','w');
-fprintf(fid,'%s\t%s\t%s\t%s\t%s\t%s\t%s\t%s\t%s\t%s\t%s\t%s\t%s\t%s\n','Gene ID','Gene Description',sprintf('%s_promoter',IP{1}),sprintf('%s_proximal',IP{1}),...
+fprintf(fid,'%s\t%s\t%s\t%s\t%s\t%s\t%s\t%s\t%s\t%s\t%s\t%s\t%s\t%s\t%s\t%s\t%s\n','Gene ID','Gene Description',sprintf('%s_promoter',IP{1}),sprintf('%s_proximal',IP{1}),...
 	sprintf('%s_distal',IP{1}),sprintf('%s_promoter',IP{2}),sprintf('%s_proximal',IP{2}),sprintf('%s_distal',IP{2}),...
 	sprintf('%s_promoter',IP{3}),sprintf('%s_proximal',IP{3}),sprintf('%s_distal',IP{3}),...
-	sprintf('%s_promoter',IP{4}),sprintf('%s_proximal',IP{4}),sprintf('%s_distal',IP{4}));
+	sprintf('%s_promoter',IP{4}),sprintf('%s_proximal',IP{4}),sprintf('%s_distal',IP{4}),...
+	sprintf('%s_promoter',IP{5}),sprintf('%s_proximal',IP{5}),sprintf('%s_distal',IP{5}));
 for i = 1:length(enrich)
     index = strcmp(geneid{i},gidadesc(:,1));
     if sum(index) == 0
@@ -49,8 +50,9 @@ for i = 1:length(enrich)
     else
        genename = gidadesc(index,2);
     end
-	fprintf(fid,'%s\t%s\t%d\t%d\t%d\t%d\t%d\t%d\t%d\t%d\t%d\t%d\t%d\t%d\n',char(geneid{i}),char(genename),enrich(i,1),enrich(i,2),enrich(i,3),...
-		enrich(i,4),enrich(i,5),enrich(i,6),enrich(i,7),enrich(i,8),enrich(i,9),enrich(i,10),enrich(i,11),enrich(i,12));
+	fprintf(fid,'%s\t%s\t%d\t%d\t%d\t%d\t%d\t%d\t%d\t%d\t%d\t%d\t%d\t%d\t%d\t%d\t%d\n',char(geneid{i}),char(genename),enrich(i,1),enrich(i,2),enrich(i,3),...
+		enrich(i,4),enrich(i,5),enrich(i,6),enrich(i,7),enrich(i,8),enrich(i,9),enrich(i,10),enrich(i,11),enrich(i,12),...
+        enrich(i,13),enrich(i,14),enrich(i,15));
 end
 fclose(fid);clear fid
 for i = 1:length(IP)
@@ -60,9 +62,9 @@ for i = 1:length(IP)
 	fclose(fid);clear fid;
 	otherIP = find(IP(~IP{i}));
 	fid = fopen(sprintf('%s_peakcentric.txt',IP{i}));
-	fprintf(fid,'%s\t%s\t%s\t%s\t%s\t%s\t%s\t%s\t%s\t%s\t%s\t%s\t%s\t%s\n','Chromosome','Left','Right','Cis-Reg',...
+	fprintf(fid,'%s\t%s\t%s\t%s\t%s\t%s\t%s\t%s\t%s\t%s\t%s\t%s\t%s\t%s\t%s\n','Chromosome','Left','Right','Cis-Reg',...
 		'Closest Gene','Distance','2nd Closest','Distance','3rd Closest','Distance',IP{otherIP(1)},...
-		IP{otherIP(2)},IP{otherIP(3)},IP{otherIP(4)});
+		IP{otherIP(2)},IP{otherIP(3)},IP{otherIP(4)},IP{otherIP(5)});
 		
 	maxenrich = zeros(1,length(IP)-1);
 	genesect = zeros(length(peak),length(IP)+4);
@@ -121,8 +123,8 @@ for i = 1:length(IP)
 			maxenrich(k) = max(y.('Xfit').(chrom)(range));
 		end
 		
-		fprintf(fid,'%s\t%d\t%d\t%s\t%s\t%d\t%s\t%d\t%s\t%d\t%d\t%d\t%d\t%d\n',peak(j,1),peak(j,2),peak(j,3),region,char(genelist{1}),...
-			genedist(1),char(genelist{2}),genedist(2),char(genelist{3}),genedist(3),maxenrich(1),maxenrich(2),maxenrich(3),maxenrich(4));
+		fprintf(fid,'%s\t%d\t%d\t%s\t%s\t%d\t%s\t%d\t%s\t%d\t%d\t%d\t%d\t%d\t%d\n',peak(j,1),peak(j,2),peak(j,3),region,char(genelist{1}),...
+			genedist(1),char(genelist{2}),genedist(2),char(genelist{3}),genedist(3),maxenrich(1),maxenrich(2),maxenrich(3),maxenrich(4),maxenrich(5));
 		
 	end
 	fclose(fid);clear fid
