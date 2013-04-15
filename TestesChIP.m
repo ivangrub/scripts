@@ -43,9 +43,13 @@ fprintf(fid,'%s\t%s\t%s\t%s\t%s\t%s\t%s\t%s\t%s\t%s\t%s\t%s\t%s\t%s\t%s\t%s\t%s\
 	sprintf('%s_promoter',IP{3}),sprintf('%s_proximal',IP{3}),sprintf('%s_distal',IP{3}),...
 	sprintf('%s_promoter',IP{4}),sprintf('%s_proximal',IP{4}),sprintf('%s_distal',IP{4}));
 for i = 1:length(enrich)
-    index = strcmp(geneid(i),gidadesc(:,1));
-    genename = gidadesc(index,2);
-	fprintf(fid,'%s\t%s\t%d\t%d\t%d\t%d\t%d\t%d\t%d\t%d\t%d\t%d\t%d\t%d\t%d\t%d\t%d\n',char(geneid{i}),genename,enrich(i,1),enrich(i,2),enrich(i,3),...
+    index = strcmp(geneid{i},gidadesc(:,1));
+    if sum(index) == 0
+       genename = {'unknown'}; 
+    else
+       genename = gidadesc(index,2);
+    end
+	fprintf(fid,'%s\t%s\t%d\t%d\t%d\t%d\t%d\t%d\t%d\t%d\t%d\t%d\t%d\t%d\t%d\t%d\t%d\n',char(geneid{i}),char(genename),enrich(i,1),enrich(i,2),enrich(i,3),...
 		enrich(i,4),enrich(i,5),enrich(i,6),enrich(i,7),enrich(i,8),enrich(i,9),enrich(i,10),enrich(i,11),enrich(i,12));
 end
 fclose(fid);clear fid
