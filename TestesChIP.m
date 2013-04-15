@@ -1,16 +1,14 @@
 
 IP = {'TAF7L' 'TBP' 'PolII' 'AR' 'TAF7' 'PI'};
+IPlist = IP;
 
-fid = fopen('knownGene.txt');
-
-known = textscan(fid,'%s%d%d%s','delimiter','\t');
-fclose(fid);clear fid
-for i = 1:length(known)
-	if strcmp(known{i,4},'+')
+geneid = knownGene(:,1);
+for i = 1:length(knownGene)
+	if strcmp(knownGene{i,4},'+')
 		continue
 	else
-		st = known{i,3};
-        endi = known{i,2};
+		st = knownGene{i,3};
+        endi = knownGene{i,2};
 	end
 	known(i,2) = st;
 	known(i,3) = endi;
@@ -35,12 +33,20 @@ for i = 1:length(IP)
 	k = k + 3;
 end
 
+fid = fopen('Testes_geneChIP.txt','w');
+for i = 1:length(enrich)
+	fprintf(fid,'%s\t%s\t%d\t%d\t%d\t%d\t%d\t%d\t%d\t%d\t%d\t%d\t%d\t%d\t%d\t%d\t%d\\n',(enrich(i,1),enrich(i,2),enrich(i,3),...
+		enrich(i,4),enrich(i,5),enrich(i,6),enrich(i,7),enrich(i,8),enrich(i,9),enrich(i,9),enrich(i,10),enrich(i,11),enrich(i,12),...
+		enrich(i,13),enrich(i,14));
+end
+fclose(fid),clear fid
 for i = 1:length(IP)
-	ip = load(sprintf('%s.mat',IP{i}));
+	ip = eval(IP{i}); %load(sprintf('%s.mat',IP{i}));
 	fid = fopen(sprintf('%s.filtered.peaks.bed',IP{i}));
 	peak = textscan(fid,'%s%d%d','delimiter','\t');
 	fclose(fid);clear fid;
 
+	maxenrich = zeros(1,length(IP)-1)
 	genesect = zeros(length(peak),length(IP)+4);
 	for j = 1:length(peak)
 		coordind = ceil(ind*50);
@@ -84,14 +90,18 @@ for i = 1:length(IP)
 		chrom = peak(j,1) == peak(:,1);
 		[ind,val] = max(ip(chrom,range));
 
-		for k = 1:length(IP)
-			if ~strcmp(IP{i},IP{k})
-				y  = load(sprintf('%s.mat',IP{k}));
+		for k = 1:length(IPlist)
+			if ~strcmp(IP{i},IPlist{k})
+				y  = eval(IP{i}); %load(sprintf('%s.mat',IPlist{k}));
 			else 
 				continue
 			end
-			maxenrich = max(y(chrom,range))
+			maxenrich(k) = max(y(chrom,range))
 		end
+		fid = fopen(sprintf('%s_peakcentric.txt',IP{i});
+		fprintf(fid,'%s\t%d\t%d\t%s\t%s\t%d\t%s\t%d\t%s\t%d\t%d\t%d\t%d\t%d\n',(peak(j,1),peak(j,2),peak(j,3),region,genelist(1),...
+			genedist(1),genelist(2),genedist(2),genelist(3),genedist(3),maxenrich(1),maxenrich(2),maxenrich(3),maxenrich(4)));
+		fclose(fid);clear fid
 	end
 
 end
