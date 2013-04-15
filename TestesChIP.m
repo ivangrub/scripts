@@ -56,7 +56,7 @@ fclose(fid);clear fid
 for i = 1:length(IP)
 	ip = load(sprintf('%s.fit.mat',IP{i}));
 	fid = fopen(sprintf('%s.filtered.peaks.bed',IP{i}));
-	peak = textscan(fid,'%s%d%d','delimiter','\t');
+	peak = textscan(fid,'%s%d%d','HeaderLines',1,'delimiter','\t');
 	fclose(fid);clear fid;
 	otherIP = find(IP(~IP{i}));
 	fid = fopen(sprintf('%s_peakcentric.txt',IP{i}));
