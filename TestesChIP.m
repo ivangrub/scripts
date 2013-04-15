@@ -34,15 +34,16 @@ for i = 1:length(IP)
 end
 
 fid = fopen('Testes_geneChIP.txt','w');
-fprintf(fid,'%s\t%s\t%s\t%s\t%s\t%s\t%s\t%s\t%s\t%s\t%s\t%s\t%s\t%s\t%s\t%s\t%s\n',(sprintf('%s_promoter',IP{1}),sprintf('%s_proximal',IP{1}),...
+fprintf(fid,'%s\t%s\t%s\t%s\t%s\t%s\t%s\t%s\t%s\t%s\t%s\t%s\t%s\t%s\t%s\t%s\t%s\t%s\t%s\t%s\n',(sprintf('%s_promoter',IP{1}),sprintf('%s_proximal',IP{1}),...
 	sprintf('%s_distal',IP{1}),sprintf('%s_promoter',IP{2}),sprintf('%s_proximal',IP{2}),sprintf('%s_distal',IP{2}),...
 	sprintf('%s_promoter',IP{3}),sprintf('%s_proximal',IP{3}),sprintf('%s_distal',IP{3}),...
-	sprintf('%s_promoter',IP{4}),sprintf('%s_proximal',IP{2}),sprintf('%s_distal',IP{4}),...
-	sprintf('%s_promoter',IP{5}),sprintf('%s_proximal',IP{2}),sprintf('%s_distal',IP{5}))
+	sprintf('%s_promoter',IP{4}),sprintf('%s_proximal',IP{4}),sprintf('%s_distal',IP{4}),...
+	sprintf('%s_promoter',IP{5}),sprintf('%s_proximal',IP{5}),sprintf('%s_distal',IP{5}),...
+	sprintf('%s_promoter',IP{6}),sprintf('%s_proximal',IP{6}),sprintf('%s_distal',IP{6}))
 for i = 1:length(enrich)
-	fprintf(fid,'%s\t%s\t%d\t%d\t%d\t%d\t%d\t%d\t%d\t%d\t%d\t%d\t%d\t%d\t%d\t%d\t%d\n',(enrich(i,1),enrich(i,2),enrich(i,3),...
+	fprintf(fid,'%s\t%s\t%d\t%d\t%d\t%d\t%d\t%d\t%d\t%d\t%d\t%d\t%d\t%d\t%d\t%d\t%d\t%d\t%d\t%d\n',(enrich(i,1),enrich(i,2),enrich(i,3),...
 		enrich(i,4),enrich(i,5),enrich(i,6),enrich(i,7),enrich(i,8),enrich(i,9),enrich(i,9),enrich(i,10),enrich(i,11),enrich(i,12),...
-		enrich(i,13),enrich(i,14));
+		enrich(i,13),enrich(i,14),enrich(i,15),enrich(i,16),enrich(i,17));
 end
 fclose(fid),clear fid
 for i = 1:length(IP)
@@ -50,7 +51,12 @@ for i = 1:length(IP)
 	fid = fopen(sprintf('%s.filtered.peaks.bed',IP{i}));
 	peak = textscan(fid,'%s%d%d','delimiter','\t');
 	fclose(fid);clear fid;
-
+	otherIP = find(IP(~IP{i}));
+	fid = fopen(sprintf('%s_peakcentric.txt',IP{i});
+	fprintf(fid,'%s\t%s\t%s\t%s\t%s\t%s\t%s\t%s\t%s\t%s\t%s\t%s\t%s\t%s\t%s\n',('Chromosome','Left','Right','Cis-Reg',...
+		'Closest Gene','Distance','2nd Closest','Distance','3rd Closest','Distance',IP{otherIP(1)},...
+		IP{otherIP(2)},IP{otherIP(3)},IP{otherIP(4)},IP{otherIP(5})
+		
 	maxenrich = zeros(1,length(IP)-1)
 	genesect = zeros(length(peak),length(IP)+4);
 	for j = 1:length(peak)
@@ -107,10 +113,10 @@ for i = 1:length(IP)
 			end
 			maxenrich(k) = max(y(chrom,range))
 		end
-		fid = fopen(sprintf('%s_peakcentric.txt',IP{i});
-		fprintf(fid,'%s\t%d\t%d\t%s\t%s\t%d\t%s\t%d\t%s\t%d\t%d\t%d\t%d\t%d\n',(peak(j,1),peak(j,2),peak(j,3),region,genelist(1),...
-			genedist(1),genelist(2),genedist(2),genelist(3),genedist(3),maxenrich(1),maxenrich(2),maxenrich(3),maxenrich(4)));
-		fclose(fid);clear fid
+		
+		fprintf(fid,'%s\t%d\t%d\t%s\t%s\t%d\t%s\t%d\t%s\t%d\t%d\t%d\t%d\t%d\t%d\n',(peak(j,1),peak(j,2),peak(j,3),region,genelist(1),...
+			genedist(1),genelist(2),genedist(2),genelist(3),genedist(3),maxenrich(1),maxenrich(2),maxenrich(3),maxenrich(4),maxenrich(5)));
+		
 	end
-
+	fclose(fid);clear fid
 end
