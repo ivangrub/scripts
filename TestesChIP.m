@@ -58,7 +58,7 @@ fclose(fid);clear fid
 for i = 1:length(IP)
 	ip = load(sprintf('%s.fit.mat',IP{i}));
 	fid = fopen(sprintf('%s.filtered.peaks.bed',IP{i}));
-	peaks = textscan(fid,'%s%d%d','delimiter','\t');
+	peaks = textscan(fid,'%s%d%d%f','delimiter','\t');
 	fclose(fid);clear fid;
 	otherIP = find(~strcmp(IP{i},IP));
 	fid = fopen(sprintf('%s_peakcentric.txt',IP{i}),'w');
@@ -68,14 +68,14 @@ for i = 1:length(IP)
 		
 	maxenrich = zeros(1,length(IP)-1);
 	genesect = zeros(length(peaks),length(IP)+4);
-    peak = [peaks{2}(1:2:end),peaks{3}(1:2:end)];
+    peak = [peaks{2},peaks{3}];
 	for j = 1:length(peaks{1})
 		coordind = ceil(ind*50);
 		chromind = strcmp(peaks{1,1}(j),genechrom(:,1));
 		chrknown = known(chromind,:);
 		gidknown = geneid(chromind,:);
 
-		midpoint = mean(peak(1),peak(2));
+		midpoint = mean(peak(j,1),peak(j,2));
 		promoter = midpoint >= chrknown(:,2)-500 | midpoint <= chrknown(:,2)+500;
 		proximal = midpoint >= chrknown(:,2)-10000 | midpoint <= chrknown(:,2)+10000;
 		distal = midpoint >= chrknown(:,2)-50000 | midpoint <= chrknown(:,2)+50000;
@@ -111,19 +111,19 @@ for i = 1:length(IP)
 			end
 		end
 
-		range = ceil(peak(1)/50):ceil(peak(2)/50);
+		range = ceil(peak(j,1)/50):ceil(peak(j,2)/50);
 		chrom = peaks{1,1}(j);
 
-		for k = 1:length(IPlist)
+		for k = 1:length(IPlist)-1
 			if ~strcmp(IP{i},IPlist{k})
 				y  = load(sprintf('%s.fit.mat',IPlist{k}));
+                maxenrich(k) = max(y.('Xfit').(chrom{1})(range));
 			else 
 				continue
-			end
-			maxenrich(k) = max(y.('Xfit').(chrom)(range));
+            end
 		end
 		
-		fprintf(fid,'%s\t%d\t%d\t%s\t%s\t%s\t%s\t%d\t%s\t%d\t%s\t%d\t%d\t%d\t%d\t%d\n',peak(j,1),peak(j,2),peak(j,3),region,char(tssgenename{1}),num2str(closesttss),char(genelist{1}),...
+		fprintf(fid,'%s\t%d\t%d\t%s\t%s\t%s\t%s\t%d\t%s\t%d\t%s\t%d\t%d\t%d\t%d\t%d\n',chrom{1},peak(j,1),peak(j,2),region,tssgenename,num2str(closesttss),char(genelist{1}),...
 			genedist(1),char(genelist{2}),genedist(2),char(genelist{3}),genedist(3),maxenrich(1),maxenrich(2),maxenrich(3),maxenrich(4));
 		
 	end
