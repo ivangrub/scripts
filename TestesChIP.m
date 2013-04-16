@@ -55,16 +55,23 @@ for i = 1:length(enrich)
         enrich(i,13),enrich(i,14),enrich(i,15));
 end
 fclose(fid);clear fid
+TAF7L = load('TAF7L.fit.mat');
+TBP = load('TBP.fit.mat');
+Pol2 = load('PolII.fit.mat');
+TAF7 = load('TAF7.fit.mat');
+AR = load('AR.fit.mat');
+PI = load('IgG.fit.mat');
+
 for i = 1:length(IP)
-	ip = load(sprintf('%s.fit.mat',IP{i}));
+   
 	fid = fopen(sprintf('%s.filtered.peaks.bed',IP{i}));
 	peaks = textscan(fid,'%s%d%d%f','delimiter','\t');
 	fclose(fid);clear fid;
-	otherIP = find(~strcmp(IP{i},IP));
+	
 	fid = fopen(sprintf('%s_peakcentric.txt',IP{i}),'w');
-	fprintf(fid,'%s\t%s\t%s\t%s\t%s\t%s\t%s\t%s\t%s\t%s\t%s\t%s\t%s\t%s\t%s\t%s\n','Chromosome','Left','Right','Cis-Reg','Closest TSS','Distance',...
-		'Closest Gene','Distance','2nd Closest','Distance','3rd Closest','Distance',char(IP{otherIP(1)}),...
-		char(IP{otherIP(2)}),char(IP{otherIP(3)}),char(IP{otherIP(4)}));
+	fprintf(fid,'%s\t%s\t%s\t%s\t%s\t%s\t%s\t%s\t%s\t%s\t%s\t%s\t%s\t%s\t%s\t%s\t%s\t%s\n','Chromosome','Left','Right','Cis-Reg','Closest TSS','Distance',...
+		'Closest Gene','Distance','2nd Closest','Distance','3rd Closest','Distance',char(IP{1}),...
+		char(IP{2}),char(IP{3}),char(IP{4}),char(IP{5}),'IgG');
 		
 	maxenrich = zeros(1,length(IP)-1);
 	genesect = zeros(length(peaks),length(IP)+4);
@@ -114,17 +121,15 @@ for i = 1:length(IP)
 		range = ceil(peak(j,1)/50):ceil(peak(j,2)/50);
 		chrom = peaks{1,1}(j);
 
-		for k = 1:length(IPlist)-1
-			if ~strcmp(IP{i},IPlist{k})
-				y  = load(sprintf('%s.fit.mat',IPlist{k}));
-                maxenrich(k) = max(y.('Xfit').(chrom{1})(range));
-			else 
-				continue
-            end
-		end
 		
-		fprintf(fid,'%s\t%d\t%d\t%s\t%s\t%s\t%s\t%d\t%s\t%d\t%s\t%d\t%d\t%d\t%d\t%d\n',chrom{1},peak(j,1),peak(j,2),region,tssgenename,num2str(closesttss),char(genelist{1}),...
-			genedist(1),char(genelist{2}),genedist(2),char(genelist{3}),genedist(3),maxenrich(1),maxenrich(2),maxenrich(3),maxenrich(4));
+        maxenrich(1) = max(TAF7L.('Xfit').(chrom{1})(range));
+        maxenrich(2) = max(TBP.('Xfit').(chrom{1})(range));
+        maxenrich(3) = max(Pol2.('Xfit').(chrom{1})(range));
+        maxenrich(4) = max(TAF7.('Xfit').(chrom{1})(range));
+        maxenrich(5) = max(AR.('Xfit').(chrom{1})(range));
+        maxenrich(6) = max(PI.('Xfit').(chrom{1})(range));
+		fprintf(fid,'%s\t%d\t%d\t%s\t%s\t%s\t%s\t%d\t%s\t%d\t%s\t%d\t%d\t%d\t%d\t%d\t%d\t%d\n',chrom{1},peak(j,1),peak(j,2),region,tssgenename,num2str(closesttss),char(genelist{1}),...
+			genedist(1),char(genelist{2}),genedist(2),char(genelist{3}),genedist(3),maxenrich(1),maxenrich(2),maxenrich(3),maxenrich(4),maxenrich(5),maxenrich(6));
 		
 	end
 	fclose(fid);clear fid
