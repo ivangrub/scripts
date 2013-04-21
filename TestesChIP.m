@@ -30,9 +30,34 @@ for i = 1:length(IP)
 		prom = 500/50;
 		prox = 10000/50;
 		dist = 50000/50;
-		enrich(j,k) = max(ind(coord-prom):ind(coord+prom);
-		enrich(j,k+1) = max(max(ind(coord-prox):ind(coord-prom)),max(ind(coord+prom):ind(coord+prox)));
-		enrich(j,k+2) = max(max(ind(coord-dist):ind(coord-prox)),max(ind(coord+prox):ind(coord+dist)));
+        
+        if coord + prom > length(ind)
+            enrich(j,k) = max(ind(coord-prom:length(ind)));
+        elseif coord-prom <= 0
+            enrich(j,k) = max(ind(1:coord+prom));
+        else
+            enrich(j,k) = max(ind(coord-prom:coord+prom));
+        end
+        
+        if prox + coord > length(ind) && coord-prox <= 0
+            enrich(j,k+1) = max(ind(1:length(ind)));
+        elseif coord+prox > length(ind)
+        	enrich(j,k+1) = max(ind(coord-prox:length(ind)));
+        elseif coord-prox <= 0
+            enrich(j,k+1) = max(ind(1:coord+prox));
+        else
+            enrich(j,k+1) = max(ind(coord-prox:coord+prox));
+        end
+        
+        if coord +dist > length(ind) && coord-dist <=0
+            enrich(j,k+2) = max(ind(1:length(ind)));
+        elseif coord+dist > length(ind)
+        	enrich(j,k+2) = max(ind(coord-dist:length(ind)));
+        elseif coord-dist <= 0
+            enrich(j,k+2) = max(ind(1:coord+dist));
+        else
+            enrich(j,k+2) = max(ind(coord-dist:coord+dist));
+        end
 	end 
 	k = k + 3;
 end
