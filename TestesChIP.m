@@ -26,13 +26,13 @@ for i = 1:length(IP)
 		st = known(j,2);
 		coord = ceil(st/50);
         
-		ind = y.('Xfit').(genechrom{j})(coord);
+		ind = y.('Xfit').(genechrom{j});
 		prom = 500/50;
 		prox = 10000/50;
 		dist = 50000/50;
-		enrich(j,k) = max(ind-prom:ind+prom);
-		enrich(j,k+1) = max(max(ind-prox:ind-prom),max(ind+prom:ind+prox));
-		enrich(j,k+2) = max(max(ind-dist:ind-prox),max(ind+prox:ind+dist));
+		enrich(j,k) = max(ind(coord-prom):ind(coord+prom);
+		enrich(j,k+1) = max(max(ind(coord-prox):ind(coord-prom)),max(ind(coord+prom):ind(coord+prox)));
+		enrich(j,k+2) = max(max(ind(coord-dist):ind(coord-prox)),max(ind(coord+prox):ind(coord+dist)));
 	end 
 	k = k + 3;
 end
