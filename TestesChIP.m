@@ -20,73 +20,68 @@ for i = 1:length(knownGene)
 	known(i,4) = str;
 end
 
-enrich = zeros(length(known),3*length(IP)-1);
-
-k = 1;
-for i = 1:length(IP)
-	y = load(sprintf('%s.fit.mat',IP{i}));
-	for j = 1:length(known)
-		edge = zeros(1,3);
-
-		st = known(j,2);
-		coord = ceil(st/50);
-        
-		ind = y.('Xfit').(genechrom{j});
-		prom = 500/50;
-		prox = 10000/50;
-		dist = 50000/50;
-        
-        if coord + prom > length(ind)
-            enrich(j,k) = max(ind(coord-prom:length(ind)));
-        elseif coord-prom <= 0
-            enrich(j,k) = max(ind(1:coord+prom));
-        else
-            enrich(j,k) = max(ind(coord-prom:coord+prom));
-        end
-        
-        if prox + coord > length(ind) && coord-prox <= 0
-            enrich(j,k+1) = max(ind(1:length(ind)));
-        	enrich(j,k+2) = enrich(j,k+1);
-        	continue
-        elseif coord+prox > length(ind) && coord-prox >0
-        	enrich(j,k+1) = max(max(ind(coord-prox:coord-prom)),max(ind(coord+prox:length(ind))));
-        elseif coord-prox <= 0 && coord - prom > 0
-            enrich(j,k+1) = max(max(ind(1:coord-prom)),max(ind(coord+prom:coord+prox)));
-        else
-            enrich(j,k+1) = max(max(ind(coord-prox:coord-prom)),max(ind(coord+prom:coord+prox)));
-        end
-        
-        if coord +dist > length(ind) && coord-dist <=0
-            enrich(j,k+2) = max(ind(1:length(ind)));
-        elseif coord+dist > length(ind)
-        	enrich(j,k+2) = max(max(ind(coord-dist:coord-prox)),max(ind(coord+prox:length(ind))));
-        elseif coord-dist <= 0 && coord -prox >0
-            enrich(j,k+2) = max(max(ind(1:coord-prox)),max(ind(coord+prox:coord+dist)));
-        else
-            enrich(j,k+2) = max(ind(coord-dist:coord+dist));
-        end
-	end 
-	k = k + 3;
-end
-
-fid = fopen('Testes_geneChIP.txt','w');
-fprintf(fid,'%s\t%s\t%s\t%s\t%s\t%s\t%s\t%s\t%s\t%s\t%s\t%s\t%s\t%s\t%s\t%s\t%s\n','Gene ID','Gene Description',sprintf('%s_promoter',IP{1}),sprintf('%s_proximal',IP{1}),...
-	sprintf('%s_distal',IP{1}),sprintf('%s_promoter',IP{2}),sprintf('%s_proximal',IP{2}),sprintf('%s_distal',IP{2}),...
-	sprintf('%s_promoter',IP{3}),sprintf('%s_proximal',IP{3}),sprintf('%s_distal',IP{3}),...
-	sprintf('%s_promoter',IP{4}),sprintf('%s_proximal',IP{4}),sprintf('%s_distal',IP{4}),...
-	sprintf('%s_promoter',IP{5}),sprintf('%s_proximal',IP{5}),sprintf('%s_distal',IP{5}));
-for i = 1:length(enrich)
-    index = strcmp(geneid{i},gidadesc(:,1));
-    if sum(index) == 0
-       genename = {'unknown'}; 
-    else
-       genename = gidadesc(index,2);
-    end
-	fprintf(fid,'%s\t%s\t%d\t%d\t%d\t%d\t%d\t%d\t%d\t%d\t%d\t%d\t%d\t%d\t%d\t%d\t%d\n',char(geneid{i}),char(genename),enrich(i,1),enrich(i,2),enrich(i,3),...
-		enrich(i,4),enrich(i,5),enrich(i,6),enrich(i,7),enrich(i,8),enrich(i,9),enrich(i,10),enrich(i,11),enrich(i,12),...
-        enrich(i,13),enrich(i,14),enrich(i,15));
-end
-fclose(fid);clear fid
+% enrich = zeros(length(known),3*length(IP)-1);
+% 
+% k = 1;
+% for i = 1:length(IP)
+% 	y = load(sprintf('%s.fit.mat',IP{i}));
+% 	for j = 1:length(known)
+% 		edge = zeros(1,3);
+% 
+% 		st = known(j,2);
+% 		coord = ceil(st/50);
+%         
+% 		ind = y.('Xfit').(genechrom{j});
+% 		prom = 500/50;
+% 		prox = 10000/50;
+% 		dist = 50000/50;
+%         
+%         promreg = [coord-prom:coord+prom];
+%         XXprom = promreg > 0 & promreg < length(ind);
+%         if sum(XXprom) > 0
+%             enrich(j,k) = max(ind(promreg(XXprom)));
+%         else
+%             enrich(j,k) = NaN;
+%         end
+%         
+%         proxreg = [coord-prox:coord-prom,coord+prom:coord+prox];
+%         XXprox = proxreg > 0 & proxreg < length(ind);
+%         if sum(XXprox) > 0
+%             enrich(j,k+1) = max(ind(proxreg(XXprox)));
+%         else
+%             enrich(j,k+1) = NaN;
+%         end
+%         
+%         distreg = [coord-dist:coord-prox,coord+prox:coord+dist];
+%         XXdist = distreg > 0 & distreg < length(ind);
+%         if sum(XXdist) > 0
+%             enrich(j,k+2) = max(ind(distreg(XXdist)));
+%         else
+%             enrich(j,k+2) = NaN;
+%         end
+%         
+% 	end 
+% 	k = k + 3;
+% end
+% 
+% fid = fopen('Testes_geneChIP.txt','w');
+% fprintf(fid,'%s\t%s\t%s\t%s\t%s\t%s\t%s\t%s\t%s\t%s\t%s\t%s\t%s\t%s\t%s\t%s\t%s\n','Gene ID','Gene Description',sprintf('%s_promoter',IP{1}),sprintf('%s_proximal',IP{1}),...
+% 	sprintf('%s_distal',IP{1}),sprintf('%s_promoter',IP{2}),sprintf('%s_proximal',IP{2}),sprintf('%s_distal',IP{2}),...
+% 	sprintf('%s_promoter',IP{3}),sprintf('%s_proximal',IP{3}),sprintf('%s_distal',IP{3}),...
+% 	sprintf('%s_promoter',IP{4}),sprintf('%s_proximal',IP{4}),sprintf('%s_distal',IP{4}),...
+% 	sprintf('%s_promoter',IP{5}),sprintf('%s_proximal',IP{5}),sprintf('%s_distal',IP{5}));
+% for i = 1:length(enrich)
+%     index = 0;
+%     if sum(index) == 0
+%        genename = {'unknown'}; 
+%     else
+%        genename = gidadesc(index,2);
+%     end
+% 	fprintf(fid,'%s\t%s\t%d\t%d\t%d\t%d\t%d\t%d\t%d\t%d\t%d\t%d\t%d\t%d\t%d\t%d\t%d\n',char(geneid{i}),char(genename),enrich(i,1),enrich(i,2),enrich(i,3),...
+% 		enrich(i,4),enrich(i,5),enrich(i,6),enrich(i,7),enrich(i,8),enrich(i,9),enrich(i,10),enrich(i,11),enrich(i,12),...
+%         enrich(i,13),enrich(i,14),enrich(i,15));
+% end
+% fclose(fid);clear fid
 TAF7L = load('TAF7L.fit.mat');
 TBP = load('TBP.fit.mat');
 Pol2 = load('PolII.fit.mat');
@@ -135,19 +130,21 @@ for i = 1:length(IP)
 		genelist = cell(1,3);
 		genedist = zeros(1,3);
 		[distance,index] = sort(abs(midpoint - chrknown(:,2)));
-
+        
+        if distance(1) <= 500
+			region = 'promoter';
+		elseif distance(1) > 500 && distance(1) <= 5000
+			region = 'proximal';
+		elseif distance(1) > 5000 && distance(1) <= 25000
+			region = 'distal';
+		else
+			region = 'intergenic';
+        end
+        
 		for closgene = 1:3
 			genelist{closgene} = gidknown(index(closgene),1);
 			genedist(closgene) = distance(closgene);
-			if genedist(closgene) > 500
-				region = 'promoter';
-			elseif genedist(closgene) > 500 && genedist(closgene) < 5000
-				region = 'proximal';
-			elseif genedist(closgene) > 5000 && genedist(closgene) < 25000
-				region = 'distal';
-			else
-				region = 'intergenic';
-			end
+			
 			tommytssdistance = midpoint - chrknown(index(closgene),2);
 			tommytesdistance  = midpoint - chrknown(index(closgene),3);
 			if tommytssdistance < 0
