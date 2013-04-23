@@ -4,17 +4,20 @@ IPlist = IP;
 
 geneid = knownGene(:,1);
 genechrom = knownGene(:,2);
-known = zeros(length(knownGene),3);
+known = zeros(length(knownGene),4);
 for i = 1:length(knownGene)
     if strcmp(knownGene{i,3},'+')
         st = knownGene{i,4};
         endi = knownGene{i,5};
+        str = 1;
     else
         st = knownGene{i,5};
         endi = knownGene{i,4};
+        str = -1;
     end
 	known(i,2) = st;
 	known(i,3) = endi;
+	known(i,4) = str;
 end
 
 enrich = zeros(length(known),3*length(IP)-1);
@@ -23,6 +26,8 @@ k = 1;
 for i = 1:length(IP)
 	y = load(sprintf('%s.fit.mat',IP{i}));
 	for j = 1:length(known)
+		edge = zeros(1,3);
+
 		st = known(j,2);
 		coord = ceil(st/50);
         
@@ -41,20 +46,22 @@ for i = 1:length(IP)
         
         if prox + coord > length(ind) && coord-prox <= 0
             enrich(j,k+1) = max(ind(1:length(ind)));
-        elseif coord+prox > length(ind)
-        	enrich(j,k+1) = max(ind(coord-prox:length(ind)));
-        elseif coord-prox <= 0
-            enrich(j,k+1) = max(ind(1:coord+prox));
+        	enrich(j,k+2) = enrich(j,k+1);
+        	continue
+        elseif coord+prox > length(ind) && coord-prox >0
+        	enrich(j,k+1) = max(max(ind(coord-prox:coord-prom)),max(ind(coord+prox:length(ind))));
+        elseif coord-prox <= 0 && coord - prom > 0
+            enrich(j,k+1) = max(max(ind(1:coord-prom)),max(ind(coord+prom:coord+prox)));
         else
-            enrich(j,k+1) = max(ind(coord-prox:coord+prox));
+            enrich(j,k+1) = max(max(ind(coord-prox:coord-prom)),max(ind(coord+prom:coord+prox)));
         end
         
         if coord +dist > length(ind) && coord-dist <=0
             enrich(j,k+2) = max(ind(1:length(ind)));
         elseif coord+dist > length(ind)
-        	enrich(j,k+2) = max(ind(coord-dist:length(ind)));
-        elseif coord-dist <= 0
-            enrich(j,k+2) = max(ind(1:coord+dist));
+        	enrich(j,k+2) = max(max(ind(coord-dist:coord-prox)),max(ind(coord+prox:length(ind))));
+        elseif coord-dist <= 0 && coord -prox >0
+            enrich(j,k+2) = max(max(ind(1:coord-prox)),max(ind(coord+prox:coord+dist)));
         else
             enrich(j,k+2) = max(ind(coord-dist:coord+dist));
         end
@@ -112,15 +119,15 @@ for i = 1:length(IP)
 		proximal = midpoint >= chrknown(:,2)-10000 | midpoint <= chrknown(:,2)+10000;
 		distal = midpoint >= chrknown(:,2)-50000 | midpoint <= chrknown(:,2)+50000;
 
-		if sum(promoter) > 0
-			region = 'promoter';
-        elseif sum(proximal) > 0
-			region = 'proximal';
-        elseif sum(proximal) > 0
-			region = 'distal';
-		else
-			region = 'intergrenic';
-		end
+		%if sum(promoter) > 0
+		%	region = 'promoter';
+        %elseif sum(proximal) > 0
+		%	region = 'proximal';
+        %elseif sum(proximal) > 0
+		%	region = 'distal';
+		%else
+		%	region = 'intergrenic';
+		%end
 
 		[closesttss,tssind] = min(abs(midpoint - chrknown(:,2)));
 		tssgenename = gidknown{tssind};
@@ -132,14 +139,23 @@ for i = 1:length(IP)
 		for closgene = 1:3
 			genelist{closgene} = gidknown(index(closgene),1);
 			genedist(closgene) = distance(closgene);
+			if genedist(closgene) > 500
+				region = 'promoter';
+			elseif genedist(closgene) > 500 && genedist(closgene) < 5000
+				region = 'proximal';
+			elseif genedist(closgene) > 5000 && genedist(closgene) < 25000
+				region = 'distal';
+			else
+				region = 'intergenic';
+			end
 			tommytssdistance = midpoint - chrknown(index(closgene),2);
 			tommytesdistance  = midpoint - chrknown(index(closgene),3);
 			if tommytssdistance < 0
-				genedist(closgene) = genedist(closgene)*-1;
+				genedist(closgene) = genedist(closgene)*-1*chrknown(index(closgene),4);
             elseif tommytssdistance > 0 && tommytesdistance < 0
 				genedist(closgene) = 0;
-			else
-				continue
+			elseif tommytssdistance > 0 && tommytesdistance > 0
+				genedist(closgene) = tommytesdistance*chrknown(index(closgene),4);
 			end
 		end
 
