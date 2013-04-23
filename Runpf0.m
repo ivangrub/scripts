@@ -1,4 +1,4 @@
-dirs = {'ES_PI','ES_Pol2','ES_PI_150bp_neigh1_wB','ES_Pol2','ES_Pol2_150bp_neigh1_wB','ES_Pol2_neigh1_wB_samp','ES_TBP','ES_TBP_150bp_neigh1_wB'};
+dirs = {'ES_Pol2_150bp_neigh1_wB_samp','ES_TBP','ES_TBP_150bp_neigh1_wB'};
 
 for j = 1:length(dirs)
     cd(sprintf('/Volumes/Genomic1/IG_express/%s' ,dirs{j}));
