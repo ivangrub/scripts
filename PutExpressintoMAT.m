@@ -25,10 +25,10 @@ for z = 1:length(conditions)
                 B = textscan(fid,'%s%f',bundle,'HeaderLines',1);
                 if k + bundle - 1 > len
                     A(j,k:k + length(B{2})-1) = B{2};
-                    C(j,k:k+length(B{2})-1) = B(1);
+                    C(j,k:k+length(B{2})-1) = B{1};
                 else
                     A(j,k:k+bundle-1) = B{2};
-                    C(j,k:k+bundle-1) = B(1);
+                    C(j,k:k+bundle-1) = B{1};
                     k = k + bundle;
                 end   
             end
