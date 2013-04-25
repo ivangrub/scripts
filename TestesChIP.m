@@ -31,7 +31,7 @@ for i = 1:length(IP)
 		st = known(j,2);
 		coord = ceil(st/50);
         
-		ind = y.('Xfit').(genechrom{j});
+		ind = y.('chip').(genechrom{j});
 		prom = 500/50;
 		prox = 10000/50;
 		dist = 50000/50;
@@ -104,7 +104,7 @@ for i = 1:length(IP)
 	genesect = zeros(length(peaks),length(IP)+4);
     peak = [peaks{2},peaks{3}];
 	for j = 1:length(peaks{1})
-		coordind = ceil(ind*50);
+		
 		chromind = strcmp(peaks{1,1}(j),genechrom(:,1));
 		chrknown = known(chromind,:);
 		gidknown = geneid(chromind,:);
@@ -160,12 +160,12 @@ for i = 1:length(IP)
 		chrom = peaks{1,1}(j);
 
 		
-        maxenrich(1) = max(TAF7L.('Xfit').(chrom{1})(range));
-        maxenrich(2) = max(TBP.('Xfit').(chrom{1})(range));
-        maxenrich(3) = max(Pol2.('Xfit').(chrom{1})(range));
-        maxenrich(4) = max(TAF7.('Xfit').(chrom{1})(range));
-        maxenrich(5) = max(AR.('Xfit').(chrom{1})(range));
-        maxenrich(6) = max(PI.('Xfit').(chrom{1})(range));
+        maxenrich(1) = max(TAF7L.('chip').(chrom{1})(range));
+        maxenrich(2) = max(TBP.('chip').(chrom{1})(range));
+        maxenrich(3) = max(Pol2.('chip').(chrom{1})(range));
+        maxenrich(4) = max(TAF7.('chip').(chrom{1})(range));
+        maxenrich(5) = max(AR.('chip').(chrom{1})(range));
+        maxenrich(6) = max(PI.('chip').(chrom{1})(range));
 		fprintf(fid,'%s\t%d\t%d\t%s\t%s\t%s\t%s\t%d\t%s\t%d\t%s\t%d\t%d\t%d\t%d\t%d\t%d\t%d\n',chrom{1},peak(j,1),peak(j,2),region,tssgenename,num2str(closesttss),char(genelist{1}),...
 			genedist(1),char(genelist{2}),genedist(2),char(genelist{3}),genedist(3),maxenrich(1),maxenrich(2),maxenrich(3),maxenrich(4),maxenrich(5),maxenrich(6));
 		
