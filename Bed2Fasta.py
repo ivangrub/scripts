@@ -41,7 +41,7 @@ refgenome = load_fasta(args.f)
 # Open peaks file
 peaks = open(args.p)
 j = args.p.split('/')
-dir = '/'.join(j[:-1])
+dir = 'cd /'.join(j[:-1])
 peakseq = open(dir+'/'+args.o+'.fa','w')
 
 bin = int(args.b)/2
