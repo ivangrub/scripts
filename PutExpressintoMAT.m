@@ -3,7 +3,7 @@ conditions = {'pol2_100bp_neigh1_wB','pol2_300bp_wB','pol2_300bp_neigh1_wB','pol
 thisfile = 'ReadProbability.txt';
 
 for z = 1:length(conditions)
-    cd(sprintf('/Volumes/Genomic1/IG_express/%s' ,conditions{z}));
+    cd(sprintf('/Volumes/Genomic1/IG_express/fly_pol2_fakerepeat/%s' ,conditions{z}));
     a = dir;
 
     bundle = 1000;
@@ -12,7 +12,7 @@ for z = 1:length(conditions)
     names = cell(1,m);
     for i = 1:m
         if ~isempty(strfind(a(i).name,thisfile))
-            fprintf('On %s\n',a(i).name)
+            fprintf('On %s\n',conditions{z})
             fid = fopen(a(i).name,'r');
             if j == 1
                 [s,w] = system(sprintf('wc -l %s',a(i).name));
