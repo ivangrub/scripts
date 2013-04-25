@@ -20,74 +20,74 @@ for i = 1:length(knownGene)
 	known(i,4) = str;
 end
 
-% enrich = zeros(length(known),3*length(IP)-1);
-% 
-% k = 1;
-% for i = 1:length(IP)
-% 	y = load(sprintf('%s.fit.mat',IP{i}));
-% 	for j = 1:length(known)
-% 		edge = zeros(1,3);
-% 
-% 		st = known(j,2);
-% 		coord = ceil(st/50);
-%         
-% 		ind = y.('Xfit').(genechrom{j});
-% 		prom = 500/50;
-% 		prox = 10000/50;
-% 		dist = 50000/50;
-%         
-%         promreg = [coord-prom:coord+prom];
-%         XXprom = promreg > 0 & promreg < length(ind);
-%         if sum(XXprom) > 0
-%             enrich(j,k) = max(ind(promreg(XXprom)));
-%         else
-%             enrich(j,k) = NaN;
-%         end
-%         
-%         proxreg = [coord-prox:coord-prom,coord+prom:coord+prox];
-%         XXprox = proxreg > 0 & proxreg < length(ind);
-%         if sum(XXprox) > 0
-%             enrich(j,k+1) = max(ind(proxreg(XXprox)));
-%         else
-%             enrich(j,k+1) = NaN;
-%         end
-%         
-%         distreg = [coord-dist:coord-prox,coord+prox:coord+dist];
-%         XXdist = distreg > 0 & distreg < length(ind);
-%         if sum(XXdist) > 0
-%             enrich(j,k+2) = max(ind(distreg(XXdist)));
-%         else
-%             enrich(j,k+2) = NaN;
-%         end
-%         
-% 	end 
-% 	k = k + 3;
-% end
-% 
-% fid = fopen('Testes_geneChIP.txt','w');
-% fprintf(fid,'%s\t%s\t%s\t%s\t%s\t%s\t%s\t%s\t%s\t%s\t%s\t%s\t%s\t%s\t%s\t%s\t%s\n','Gene ID','Gene Description',sprintf('%s_promoter',IP{1}),sprintf('%s_proximal',IP{1}),...
-% 	sprintf('%s_distal',IP{1}),sprintf('%s_promoter',IP{2}),sprintf('%s_proximal',IP{2}),sprintf('%s_distal',IP{2}),...
-% 	sprintf('%s_promoter',IP{3}),sprintf('%s_proximal',IP{3}),sprintf('%s_distal',IP{3}),...
-% 	sprintf('%s_promoter',IP{4}),sprintf('%s_proximal',IP{4}),sprintf('%s_distal',IP{4}),...
-% 	sprintf('%s_promoter',IP{5}),sprintf('%s_proximal',IP{5}),sprintf('%s_distal',IP{5}));
-% for i = 1:length(enrich)
-%     index = 0;
-%     if sum(index) == 0
-%        genename = {'unknown'}; 
-%     else
-%        genename = gidadesc(index,2);
-%     end
-% 	fprintf(fid,'%s\t%s\t%d\t%d\t%d\t%d\t%d\t%d\t%d\t%d\t%d\t%d\t%d\t%d\t%d\t%d\t%d\n',char(geneid{i}),char(genename),enrich(i,1),enrich(i,2),enrich(i,3),...
-% 		enrich(i,4),enrich(i,5),enrich(i,6),enrich(i,7),enrich(i,8),enrich(i,9),enrich(i,10),enrich(i,11),enrich(i,12),...
-%         enrich(i,13),enrich(i,14),enrich(i,15));
-% end
-% fclose(fid);clear fid
-TAF7L = load('TAF7L.fit.mat');
-TBP = load('TBP.fit.mat');
-Pol2 = load('PolII.fit.mat');
-TAF7 = load('TAF7.fit.mat');
-AR = load('AR.fit.mat');
-PI = load('IgG.fit.mat');
+enrich = zeros(length(known),3*length(IP)-1);
+
+k = 1;
+for i = 1:length(IP)
+	y = load(sprintf('%s.mat',IP{i}));
+	for j = 1:length(known)
+		edge = zeros(1,3);
+
+		st = known(j,2);
+		coord = ceil(st/50);
+        
+		ind = y.('Xfit').(genechrom{j});
+		prom = 500/50;
+		prox = 10000/50;
+		dist = 50000/50;
+        
+        promreg = [coord-prom:coord+prom];
+        XXprom = promreg > 0 & promreg < length(ind);
+        if sum(XXprom) > 0
+            enrich(j,k) = max(ind(promreg(XXprom)));
+        else
+            enrich(j,k) = NaN;
+        end
+        
+        proxreg = [coord-prox:coord-prom,coord+prom:coord+prox];
+        XXprox = proxreg > 0 & proxreg < length(ind);
+        if sum(XXprox) > 0
+            enrich(j,k+1) = max(ind(proxreg(XXprox)));
+        else
+            enrich(j,k+1) = NaN;
+        end
+        
+        distreg = [coord-dist:coord-prox,coord+prox:coord+dist];
+        XXdist = distreg > 0 & distreg < length(ind);
+        if sum(XXdist) > 0
+            enrich(j,k+2) = max(ind(distreg(XXdist)));
+        else
+            enrich(j,k+2) = NaN;
+        end
+        
+	end 
+	k = k + 3;
+end
+
+fid = fopen('Testes_geneChIP.txt','w');
+fprintf(fid,'%s\t%s\t%s\t%s\t%s\t%s\t%s\t%s\t%s\t%s\t%s\t%s\t%s\t%s\t%s\t%s\t%s\n','Gene ID','Gene Description',sprintf('%s_promoter',IP{1}),sprintf('%s_proximal',IP{1}),...
+	sprintf('%s_distal',IP{1}),sprintf('%s_promoter',IP{2}),sprintf('%s_proximal',IP{2}),sprintf('%s_distal',IP{2}),...
+	sprintf('%s_promoter',IP{3}),sprintf('%s_proximal',IP{3}),sprintf('%s_distal',IP{3}),...
+	sprintf('%s_promoter',IP{4}),sprintf('%s_proximal',IP{4}),sprintf('%s_distal',IP{4}),...
+	sprintf('%s_promoter',IP{5}),sprintf('%s_proximal',IP{5}),sprintf('%s_distal',IP{5}));
+for i = 1:length(enrich)
+    index = 0;
+    if sum(index) == 0
+       genename = {'unknown'}; 
+    else
+       genename = gidadesc(index,2);
+    end
+	fprintf(fid,'%s\t%s\t%d\t%d\t%d\t%d\t%d\t%d\t%d\t%d\t%d\t%d\t%d\t%d\t%d\t%d\t%d\n',char(geneid{i}),char(genename),enrich(i,1),enrich(i,2),enrich(i,3),...
+		enrich(i,4),enrich(i,5),enrich(i,6),enrich(i,7),enrich(i,8),enrich(i,9),enrich(i,10),enrich(i,11),enrich(i,12),...
+        enrich(i,13),enrich(i,14),enrich(i,15));
+end
+fclose(fid);clear fid
+TAF7L = load('TAF7L.mat');
+TBP = load('TBP.mat');
+Pol2 = load('PolII.mat');
+TAF7 = load('TAF7.mat');
+AR = load('AR.mat');
+PI = load('IgG.mat');
 
 for i = 1:length(IP)
    
