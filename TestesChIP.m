@@ -1,23 +1,20 @@
 
-IP = {'TAF7L' 'TBP' 'PolII' 'TAF7' 'AR'};
-IPlist = IP;
+IP = {'TAF7L' 'TBP' 'PolII' 'TAF7' 'AR' 'IgG'};
+IPlist = IP(1:5);
 
 geneid = knownGene(:,1);
 genechrom = knownGene(:,2);
-known = zeros(length(knownGene),4);
+known = zeros(length(knownGene),3);
 for i = 1:length(knownGene)
     if strcmp(knownGene{i,3},'+')
         st = knownGene{i,4};
         endi = knownGene{i,5};
-        str = 1;
     else
         st = knownGene{i,5};
         endi = knownGene{i,4};
-        str = -1;
     end
 	known(i,2) = st;
 	known(i,3) = endi;
-	known(i,4) = str;
 end
 
 enrich = zeros(length(known),3*length(IP)-1);
@@ -26,16 +23,24 @@ k = 1;
 for i = 1:length(IP)
 	y = load(sprintf('%s.mat',IP{i}));
 	for j = 1:length(known)
+<<<<<<< HEAD
 		edge = zeros(1,3);
 
 		st = known(j,2);
 		coord = ceil(st/50);
         
 		ind = y.('chip').(genechrom{j});
+=======
+		st = known(j,2);
+		coord = ceil(st/50);
+        
+		ind = y.('Xfit').(genechrom{j});
+>>>>>>> Decod2stamp and express processing
 		prom = 500/50;
 		prox = 10000/50;
 		dist = 50000/50;
         
+<<<<<<< HEAD
         promreg = [coord-prom:coord+prom];
         XXprom = promreg > 0 & promreg < length(ind);
         if sum(XXprom) > 0
@@ -60,6 +65,35 @@ for i = 1:length(IP)
             enrich(j,k+2) = NaN;
         end
         
+=======
+        if coord + prom > length(ind)
+            enrich(j,k) = max(ind(coord-prom:length(ind)));
+        elseif coord-prom <= 0
+            enrich(j,k) = max(ind(1:coord+prom));
+        else
+            enrich(j,k) = max(ind(coord-prom:coord+prom));
+        end
+        
+        if prox + coord > length(ind) && coord-prox <= 0
+            enrich(j,k+1) = max(ind(1:length(ind)));
+        elseif coord+prox > length(ind)
+        	enrich(j,k+1) = max(ind(coord-prox:length(ind)));
+        elseif coord-prox <= 0
+            enrich(j,k+1) = max(ind(1:coord+prox));
+        else
+            enrich(j,k+1) = max(ind(coord-prox:coord+prox));
+        end
+        
+        if coord +dist > length(ind) && coord-dist <=0
+            enrich(j,k+2) = max(ind(1:length(ind)));
+        elseif coord+dist > length(ind)
+        	enrich(j,k+2) = max(ind(coord-dist:length(ind)));
+        elseif coord-dist <= 0
+            enrich(j,k+2) = max(ind(1:coord+dist));
+        else
+            enrich(j,k+2) = max(ind(coord-dist:coord+dist));
+        end
+>>>>>>> Decod2stamp and express processing
 	end 
 	k = k + 3;
 end
@@ -71,7 +105,11 @@ fprintf(fid,'%s\t%s\t%s\t%s\t%s\t%s\t%s\t%s\t%s\t%s\t%s\t%s\t%s\t%s\t%s\t%s\t%s\
 	sprintf('%s_promoter',IP{4}),sprintf('%s_proximal',IP{4}),sprintf('%s_distal',IP{4}),...
 	sprintf('%s_promoter',IP{5}),sprintf('%s_proximal',IP{5}),sprintf('%s_distal',IP{5}));
 for i = 1:length(enrich)
+<<<<<<< HEAD
     index = 0;
+=======
+    index = strcmp(geneid{i},gidadesc(:,1));
+>>>>>>> Decod2stamp and express processing
     if sum(index) == 0
        genename = {'unknown'}; 
     else
@@ -82,12 +120,21 @@ for i = 1:length(enrich)
         enrich(i,13),enrich(i,14),enrich(i,15));
 end
 fclose(fid);clear fid
+<<<<<<< HEAD
 TAF7L = load('TAF7L.mat');
 TBP = load('TBP.mat');
 Pol2 = load('PolII.mat');
 TAF7 = load('TAF7.mat');
 AR = load('AR.mat');
 PI = load('IgG.mat');
+=======
+TAF7L = load('TAF7L.fit.mat');
+TBP = load('TBP.fit.mat');
+Pol2 = load('PolII.fit.mat');
+TAF7 = load('TAF7.fit.mat');
+AR = load('AR.fit.mat');
+PI = load('IgG.fit.mat');
+>>>>>>> Decod2stamp and express processing
 
 for i = 1:length(IP)
    
@@ -114,15 +161,15 @@ for i = 1:length(IP)
 		proximal = midpoint >= chrknown(:,2)-10000 | midpoint <= chrknown(:,2)+10000;
 		distal = midpoint >= chrknown(:,2)-50000 | midpoint <= chrknown(:,2)+50000;
 
-		%if sum(promoter) > 0
-		%	region = 'promoter';
-        %elseif sum(proximal) > 0
-		%	region = 'proximal';
-        %elseif sum(proximal) > 0
-		%	region = 'distal';
-		%else
-		%	region = 'intergrenic';
-		%end
+		if sum(promoter) > 0
+			region = 'promoter';
+        elseif sum(proximal) > 0
+			region = 'proximal';
+        elseif sum(proximal) > 0
+			region = 'distal';
+		else
+			region = 'intergrenic';
+		end
 
 		[closesttss,tssind] = min(abs(midpoint - chrknown(:,2)));
 		tssgenename = gidknown{tssind};
@@ -130,29 +177,18 @@ for i = 1:length(IP)
 		genelist = cell(1,3);
 		genedist = zeros(1,3);
 		[distance,index] = sort(abs(midpoint - chrknown(:,2)));
-        
-        if distance(1) <= 500
-			region = 'promoter';
-		elseif distance(1) > 500 && distance(1) <= 5000
-			region = 'proximal';
-		elseif distance(1) > 5000 && distance(1) <= 25000
-			region = 'distal';
-		else
-			region = 'intergenic';
-        end
-        
+
 		for closgene = 1:3
 			genelist{closgene} = gidknown(index(closgene),1);
 			genedist(closgene) = distance(closgene);
-			
 			tommytssdistance = midpoint - chrknown(index(closgene),2);
 			tommytesdistance  = midpoint - chrknown(index(closgene),3);
 			if tommytssdistance < 0
-				genedist(closgene) = genedist(closgene)*-1*chrknown(index(closgene),4);
+				genedist(closgene) = genedist(closgene)*-1;
             elseif tommytssdistance > 0 && tommytesdistance < 0
 				genedist(closgene) = 0;
-			elseif tommytssdistance > 0 && tommytesdistance > 0
-				genedist(closgene) = tommytesdistance*chrknown(index(closgene),4);
+			else
+				continue
 			end
 		end
 

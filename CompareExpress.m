@@ -1,38 +1,36 @@
-conditions = {'pol2_100bp_neigh1_wB','pol2_300bp_wB','pol2_300bp_neigh1_wB','pol2_900bp_wB'};
-
+conditions = {'ES_Pol2_150bp_neigh1_wB','ES_Pol2_150bp_neigh1_wB_samp','ES_TBP_150bp_neigh1_wB','ES_TBP_150bp_neigh1_wB_samp','ES_PI_150bp_neigh1_wB'};
+names = cell(1,length(conditions));
 for z = 1:length(conditions)
 
-    cd(sprintf('/Volumes/Genomic1/IG_express/fly_pol2_fakerepeat/%s',conditions{z}));
+    cd(sprintf('/Volumes/Genomic1/IG_express/%s',conditions{z}));
     a = dir;
 
     bundle = 1000;
     [m,~] = size(a);
-    j = 1;
-    names = cell(1,m);
+    
     for i = 1:m
         if ~isempty(strfind(a(i).name,'chip.') & strfind(a(i).name,'.bedgraph'))
             fprintf('On %s\n',a(i).name)
             fid = fopen(a(i).name,'r');
-            if j == 1
+            if z == 1
                 [s,w] = system(sprintf('wc -l %s',a(i).name));
                 [len,~] = strread(w,'%d%s');
-                A = zeros(m,len);
+                FullCount = zeros(length(conditions),len);
+                A = zeros(1,len);
             end
             k = 1;
             while ~feof(fid)
                 B = textscan(fid,'%s%d%f',bundle,'HeaderLines',1);
                 if k + bundle - 1 > len
-                    A(j,k:k + length(B{3})-1) = B{3};
+                    A(1,k:k + length(B{3})-1) = B{3};
                 else
-                    A(j,k:k+bundle-1) = B{3};
+                    A(1,k:k+bundle-1) = B{3};
                     k = k + bundle;
                 end   
             end
-            names{j} = a(i).name;
-            j = j + 1;
             fclose(fid);clear fid B
         end
     end
-    FullCount = A(1:j-1,:);
-    names = names(1:j-1);
+    FullCount(z,:) = A;
+    names(z) = conditions(z);
 end
