@@ -46,7 +46,7 @@ peakseq = open(dir+'/'+args.o+'.fa','w')
 
 bin = int(args.b)/2
 
-i = 0
+i = 1
 for line in peaks:
 	if i == 0:
 		i += 1 # same as i = i + 1
