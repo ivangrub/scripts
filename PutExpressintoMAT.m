@@ -22,7 +22,7 @@ for z = 1:length(conditions)
             end
             k = 1;
             while ~feof(fid)
-                B = textscan(fid,'%s%f',bundle,'HeaderLines',1);
+                B = textscan(fid,'%d%f',bundle,'HeaderLines',1);
                 if k + bundle - 1 > len
                     A(j,k:k + length(B{2})-1) = B{2};
                     C(j,k:k+length(B{2})-1) = B{1};
