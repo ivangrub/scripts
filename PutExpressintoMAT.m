@@ -2,8 +2,8 @@
 conditions = {'pol2_100bp_neigh1_wB','pol2_300bp_wB','pol2_300bp_neigh1_wB','pol2_900bp_wB','pol2_9000bp_wB'};
 thisfile = 'ReadProbability.txt';
 
-for j = 1:length(conditions)
-    cd(sprintf('/Volumes/Genomic1/IG_express/%s' ,conditions{j}));
+for z = 1:length(conditions)
+    cd(sprintf('/Volumes/Genomic1/IG_express/%s' ,conditions{z}));
     a = dir;
 
     bundle = 1000;
@@ -18,14 +18,17 @@ for j = 1:length(conditions)
                 [s,w] = system(sprintf('wc -l %s',a(i).name));
                 [len,~] = strread(w,'%d%s');
                 A = zeros(m,len);
+                C = zeros(m,len);
             end
             k = 1;
             while ~feof(fid)
-                B = textscan(fid,'%s%d%f',bundle,'HeaderLines',1);
+                B = textscan(fid,'%s%f',bundle,'HeaderLines',1);
                 if k + bundle - 1 > len
-                    A(j,k:k + length(B{3})-1) = B{3};
+                    A(j,k:k + length(B{2})-1) = B{2};
+                    C(j,k:k+length(B{2})-1) = B(1);
                 else
-                    A(j,k:k+bundle-1) = B{3};
+                    A(j,k:k+bundle-1) = B{2};
+                    C(j,k:k+bundle-1) = B(1);
                     k = k + bundle;
                 end   
             end
@@ -34,6 +37,7 @@ for j = 1:length(conditions)
             fclose(fid);clear fid B
         end
     end
-    FullCount = A(1:j-1,:);
+    Probs = A(1:j-1,:);
+    readnames = C(1:j-1,:);
     names = names(1:j-1);
 end
