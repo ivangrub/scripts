@@ -19,19 +19,19 @@ for z = 1:length(conditions)
                 [s,w] = system(sprintf('wc -l %s',a(i).name));
                 [len,~] = strread(w,'%d%s');
                 Probs = zeros(length(conditions),len);
-                readnames = cell(length(conditions),len);
+                readnames = zeros(length(conditions),len);
                 A = zeros(m,len);
-                C = cell(m,len);
+                C = zeros(m,len);
             end
             k = 1;
             while ~feof(fid)
                 B = textscan(fid,'%s%f',bundle,'HeaderLines',1);
                 if k + bundle - 1 > len
                     A(j,k:k + length(B{2})-1) = B{2};
-                    C(j,k:k+length(B{2})-1) = B{1};
+                    C(j,k:k+length(B{1})-1) = str2double(strrep(B{1},'SRR',''));
                 else
                     A(j,k:k+bundle-1) = B{2};
-                    C(j,k:k+bundle-1) = B{1};
+                    C(j,k:k+bundle-1) = str2double(strrep(B{1},'SRR',''));
                     k = k + bundle;
                 end   
             end

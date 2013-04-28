@@ -1,8 +1,8 @@
-conditions = {'ES_Pol2_150bp_neigh1_wB','ES_Pol2_150bp_neigh1_wB_samp','ES_TBP_150bp_neigh1_wB','ES_TBP_150bp_neigh1_wB_samp','ES_PI_150bp_neigh1_wB'};
+conditions = {'pol2_100bp_neigh1_wB','pol2_300bp_wB','pol2_300bp_neigh1_wB','pol2_900bp_wB','pol2_9000bp_wB','pol2_k500_noexpress'};
 names = cell(1,length(conditions));
 for z = 1:length(conditions)
 
-    cd(sprintf('/Volumes/Genomic1/IG_express/%s',conditions{z}));
+    cd(sprintf('/Volumes/Genomic1/IG_express/fly_pol2_fakerepeat/%s',conditions{z}));
     a = dir;
 
     bundle = 1000;
