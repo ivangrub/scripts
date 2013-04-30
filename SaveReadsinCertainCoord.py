@@ -47,7 +47,7 @@ else:
 	peaks = open('%s' % args.p,'r')
 	for line in peaks:
 		s = line.strip().split('\t')
-		coordinates = '_'.join(s)
+		coordinates = '_'.join(s[0:2])
 		chr = s[0]
 		lcoord = int(s[1])
 		rcoord = int(s[2])
