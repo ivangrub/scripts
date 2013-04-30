@@ -88,18 +88,9 @@ def ReadReads(dir):
 		if seq.is_unmapped:
 			continue
 		read = AddtoBin(seq,refdict)
-		if args.bo == 'y':
-			outfile.write(read)
 		
 		# Count the number of mapped reads. Keep track of whether it is a multiply aligned read
-		if nreads > 0:
-			#print prev_seq.qname, seq.qname, nreads
-			if prev_seq.qname != seq.qname:
-				nreads += 1
-			prev_seq = seq
-		else:
-			nreads += 1
-			prev_seq = seq
+		nreads += 1
 		
 		# Keep track of the reads
 		if nreads % 1e6 == 0:
