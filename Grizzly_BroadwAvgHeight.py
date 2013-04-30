@@ -2,7 +2,7 @@
 
 import numpy as np
 
-IP = ['chip.ES_PI.k100.mm9_norandom','chip.ES_Pol2.k100.mm9_norandom','chip.ES_TBP.k100.mm9_norandom','chip.ES_Pol2_150bp_neigh1_wB.mm9_norandom','chip.ES_Pol2_150bp_neigh1_wB_samp.mm9_norandom','chip.ES_TBP_150bp_neigh1_wB.mm9_norandom','chip.ES_PI_150bp_neigh1_wB.mm9_norandom']
+IP = ['chip.ES_PI.k100.mm9_norandom','chip.ES_Pol2.k100.mm9_norandom','chip.ES_TBP.k100.mm9_norandom','chip.ES_Pol2_150bp_neigh1_wB.mm9_norandom','chip.ES_Pol2_150bp_neigh1_wB_samp.mm9_norandom','chip.ES_TBP.150bp_neigh1_wB.mm9_norandom','chip.ES_PI.150bp_neigh1_wB.mm9_norandom']
 
 for i in IP:
 	file = open('%s.peaks.bed' % i,'r')
