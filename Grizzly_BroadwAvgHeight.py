@@ -2,7 +2,7 @@
 
 import numpy as np
 
-IP = ['AR','IgG','PolII','TBP','TAF7','TAF7L']
+IP = ['ES_PI.k100.mm9_norandom','ES_Pol2.k100.mm9_norandom','ES_TBP.k100.mm9_norandom','ES_Pol2_150bp_neigh1_wB.mm9_norandom','ES_Pol2_150bp_neigh1_wB_samp.mm9_norandom','ES_TBP_150bp_neigh1_wB.mm9_norandom','ES_PI_150bp_neigh1_wB.mm9_norandom']
 
 for i in IP:
 	file = open('%s.peaks.bed' % i,'r')
@@ -18,7 +18,7 @@ for i in IP:
 		try:
 			x = int(s[3])
 			if len(enrich) >= 1:
-				enr = np.mean(enrich)
+				enr = np.amax(enrich)
 				y = [chrom,left,right,str(enr)]
 				newfile.write('\t'.join(y)+'\n')
 				enrich = []
