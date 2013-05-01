@@ -1,6 +1,6 @@
 #!/usr/bin/env python
 
-import pysam
+import pysam as pys
 
 x = pys.Samfile('hits.1.prob.bam','rb')
 out = open('ReadAlignCounts.txt','w')
@@ -13,9 +13,12 @@ for read in x:
 		i += 1
 		continue
 
-	if name === read.qname:
+	if name == read.qname:
 		i += 1
 	else:
 		out.write('%s\t%d\n' % (name,i))
 		name = read.qname
 		i = 1
+
+x.close()
+out.close()
