@@ -20,5 +20,6 @@ for read in x:
 		name = read.qname
 		i = 1
 
+out.write('%s\t%d\n' % (name,i))
 x.close()
 out.close()
