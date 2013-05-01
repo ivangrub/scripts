@@ -33,16 +33,16 @@ def gen2bin(infile,convbam,read,chrlist,bin,headlist,cc):
 
 	read.pos = off
 	read.tid = convbam.gettid(name)
-	indice = [-1,0,1]
-	for ran in indice:
-		try:
-			if (convbam.getrname(y-k+1+ran) not in headlist):
-				headlist.add(convbam.getrname(y-k+1+ran))
-				binheader.write('@SQ\tSN:%s\tLN:%d\n' % (convbam.getrname(y-k+1+ran),int(args.b)-1))
-			else:
-				continue
-		except ValueError:
-			continue
+	# indice = [-1,0,1]
+	# for ran in indice:
+	# 	try:
+	# 		if (convbam.getrname(y-k+1+ran) not in headlist):
+	# 			headlist.add(convbam.getrname(y-k+1+ran))
+	# 			binheader.write('@SQ\tSN:%s\tLN:%d\n' % (convbam.getrname(y-k+1+ran),int(args.b)-1))
+	# 		else:
+	# 			continue
+	# 	except ValueError:
+	# 		continue
 
 	if (cc % 1000000 == 0):
 		print '%d reads done' % cc
@@ -122,20 +122,20 @@ for line in infile:
 
 convbam.close()
 conv.close()
-conv = pys.Samfile('%s_converted.bam' % args.o,'rb')
+# conv = pys.Samfile('%s_converted.bam' % args.o,'rb')
 
-binheader.close()
-print 'Making new header'
-newheader = pys.Samfile('newheaders.txt','r')
+# binheader.close()
+# print 'Making new header'
+# newheader = pys.Samfile('newheaders.txt','r')
 
-print 'Trimming and updating tid'
-TrimBAM(conv,newheader)
-conv.close()
-newheader.close()
-if args.r is '-':
-	outbam.close()
+# print 'Trimming and updating tid'
+# TrimBAM(conv,newheader)
+# conv.close()
+# newheader.close()
+# if args.r is '-':
+# 	outbam.close()
 
-infile.close()
+# infile.close()
 
 
 
