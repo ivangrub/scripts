@@ -10,16 +10,17 @@ j = 0
 for read in x:
 	if i == 0:
 		name = read.qname
-		i += 1
+		i = 1
+		j += 1
 		continue
 
 	if name == read.qname:
-		i += 1
+		j += 1
 	else:
-		out.write('%s\t%d\n' % (name,i))
+		out.write('%s\t%d\n' % (name,j))
 		name = read.qname
-		i = 1
+		j = 1
 
-out.write('%s\t%d\n' % (name,i))
+out.write('%s\t%d\n' % (name,j))
 x.close()
 out.close()
