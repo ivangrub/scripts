@@ -8,6 +8,8 @@ out = open('ReadAlignCounts.txt','w')
 i = 0
 j = 0
 for read in x:
+	if read.is_unmapped:
+		continue
 	if i == 0:
 		name = read.qname
 		i = 1
