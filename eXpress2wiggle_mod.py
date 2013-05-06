@@ -66,17 +66,17 @@ def AddtoBin(read,ref):
 	# Check boundary conditions	
 	if strand == '+':
 		try:
-			chipF[chr][st:st+sep-1] += frac
+			#chipF[chr][st:st+sep-1] += frac
 			chip[chr][st:st+sep-1] += frac
 		except IndexError:
-			chipF[chr][st:len(chipF[chr])-1] += frac
+			#chipF[chr][st:len(chipF[chr])-1] += frac
 			chip[chr][st:len(chip[chr])-1] += frac
 	else:
 		try:
-			chipR[chr][st-sep+1+int(np.floor(len(read.seq)/int(args.w))):st+int(np.floor(len(read.seq)/int(args.w)))] += frac
+			#chipR[chr][st-sep+1+int(np.floor(len(read.seq)/int(args.w))):st+int(np.floor(len(read.seq)/int(args.w)))] += frac
 			chip[chr][st-sep+1+int(np.floor(len(read.seq)/int(args.w))):st+int(np.floor(len(read.seq)/int(args.w)))] += frac
 		except IndexError:
-			chipR[chr][0:st+int(np.floor(len(read.seq)/int(args.w)))] += frac
+			#chipR[chr][0:st+int(np.floor(len(read.seq)/int(args.w)))] += frac
 			chip[chr][0:st+int(np.floor(len(read.seq)/int(args.w)))] += frac		
 	
 	endread = AdjustRead(read,chr,start)
@@ -222,10 +222,10 @@ dirname = '/'.join(dir[:-1])
 sep = int(np.ceil(int(args.d)/int(args.w)))
 
 # Allow for the summed input along with specific strands
-v = ['chip','chipF','chipR']
+v = ['chip'] #,'chipF','chipR']
 chip,samheader = GenomeLen()
-chipF, ign = GenomeLen()
-chipR, ign = GenomeLen()
+#chipF, ign = GenomeLen()
+#chipR, ign = GenomeLen()
 chrlist,chrlen = ParseHeader(samheader)
 
 if '%s/%s.%s.pkl'% (dirname,args.o,v[0]) not in glob.glob('%s/*pkl' % dirname):
