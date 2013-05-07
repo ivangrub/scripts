@@ -39,7 +39,7 @@ if (args.c != None):
 	lcoord = int(coord[0])
 	rcoord = int(coord[1])
 	coordinates = '%s_%d_%d' % (chr,lcoord,rcoord)	
-	outfile =open('MultiplyAligned_%s.txt' % coordinates,'w')
+	outfile =open('%s_MultiplyAligned_%s.txt' % (args.o,coordinates),'w')
 	samfile = pys.Samfile('%s' % args.r,'rb')
 	ref = samfile.references	
 	GetReads(chr,coord,lcoord,rcoord,samfile,outfile)
@@ -51,7 +51,7 @@ else:
 		chr = s[0]
 		lcoord = int(s[1])
 		rcoord = int(s[2])
-		outfile =open('MultiplyAligned_%s.txt' % coordinates,'w')
+		outfile =open('%s_MultiplyAligned_%s.txt' % (args.o,coordinates),'w')
 		samfile = pys.Samfile('%s' % args.r,'rb')
 		ref = samfile.references	
 		GetReads(chr,coord,lcoord,rcoord,samfile,outfile)
