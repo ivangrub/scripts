@@ -30,7 +30,7 @@ parser.add_argument('-o',help='Output tag that will be assigned to MultiplyAlign
 args = parser.parse_args()
 
 if (args.c == None or args.p == None) or args.r == None:
-	sys.exit('Enter the coordinates or BAM file')
+	sys.exit('Enter the coordinates or peak file and the BAM file')
 
 if (args.c != None):	
 	s = args.c.split(':')
