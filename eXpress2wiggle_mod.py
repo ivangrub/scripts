@@ -27,7 +27,7 @@ def GenomeLen():
 	return genome,header
 	
 def AddtoBin(read,ref):
-	global chip, sep, chipF, chipR
+	global chip, sep#, chipF, chipR
 	
 	# Check the strand
 	if read.is_reverse:
@@ -83,13 +83,13 @@ def AddtoBin(read,ref):
 	return endread	
 		
 def NormalizeReads(nreads):
-	global chip, chipF, chipR
+	global chip#, chipF, chipR
 	# Normalize to 10 million reads
 	ratio = nreads/10000000. #1e7
 	for i in chip.keys():
 		chip[i] = chip[i]/ratio	
-		chipF[i] = chipF[i]/ratio
-		chipR[i] = chipR[i]/ratio
+		#chipF[i] = chipF[i]/ratio
+		#chipR[i] = chipR[i]/ratio
 
 def AdjustRead(read,chrom,st):
 	"""Update or write a new SAM file"""
