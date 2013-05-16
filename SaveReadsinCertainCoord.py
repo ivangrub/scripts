@@ -29,7 +29,7 @@ parser.add_argument('-p',help='Input a peak file',default = None)
 parser.add_argument('-o',help='Output tag that will be assigned to MultiplyAligned file',default='output')
 args = parser.parse_args()
 
-if (args.c == None or args.p == None) or args.r == None:
+if (args.c == None and args.p == None) or args.r == None:
 	sys.exit('Enter the coordinates or peak file and the BAM file')
 
 if (args.c != None):	
