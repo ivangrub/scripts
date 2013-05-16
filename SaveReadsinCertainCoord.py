@@ -5,7 +5,7 @@ import numpy as np
 import argparse
 import sys
 
-def GetReads(chr,coord,lcoord,rcoord,sam,out):
+def GetReads(chr,lcoord,rcoord,sam,out):
 	out.write('%s\n' % args.r)
 	i = 0
 	for read in sam:
@@ -42,7 +42,7 @@ if (args.c != None):
 	outfile =open('%s_MultiplyAligned_%s.txt' % (args.o,coordinates),'w')
 	samfile = pys.Samfile('%s' % args.r,'rb')
 	ref = samfile.references	
-	GetReads(chr,coord,lcoord,rcoord,samfile,outfile)
+	GetReads(chr,lcoord,rcoord,samfile,outfile)
 else:
 	peaks = open('%s' % args.p,'r')
 	for line in peaks:
@@ -54,4 +54,4 @@ else:
 		outfile =open('%s_MultiplyAligned_%s.txt' % (args.o,coordinates),'w')
 		samfile = pys.Samfile('%s' % args.r,'rb')
 		ref = samfile.references	
-		GetReads(chr,coord,lcoord,rcoord,samfile,outfile)
+		GetReads(chr,lcoord,rcoord,samfile,outfile)
