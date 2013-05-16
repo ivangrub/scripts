@@ -42,7 +42,7 @@ refgenome = load_fasta(args.f)
 peaks = open(args.p)
 j = args.p.split('/')
 dir = 'cd /'.join(j[:-1])
-peakseq = open(dir+'/'+args.o+'.fa','w')
+peakseq = open(args.o+'.txt','w')
 
 bin = int(args.b)/2
 
