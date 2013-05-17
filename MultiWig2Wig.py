@@ -8,7 +8,7 @@ j = 0
 for i in x:
 	k = 0
 	wig = open('%s.wig' % i)
-	for line in wig
+	for line in wig:
 		if  j== 0 and k == 0:
 			outfile.write(line)
 			j += 1
