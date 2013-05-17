@@ -6,11 +6,16 @@ outfile = open('Combinedwiggle.wig','w')
 
 j = 0
 for i in x:
+	k = 0
 	wig = open('%s.wig' % i)
 	for line in wig
-		if j == 0:
+		if  j== 0 and k == 0:
 			outfile.write(line)
 			j += 1
+			k += 1
+			continue
+		elif k == 0:
+			k += 1
 			continue
 
 		outfile.write(line)
