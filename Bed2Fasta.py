@@ -43,7 +43,7 @@ peaks = open(args.p)
 j = args.p.split('/')
 dir = 'cd /'.join(j[:-1])
 peakseq = open(args.o+'.txt','w')
-
+fullbed = open(args.o+'.bed','w')
 bin = int(args.b)/2
 
 i = 1
@@ -57,12 +57,14 @@ for line in peaks:
 	right = int(pieces[2])-1
 	mid = (right + left)/2
 	sequence = refgenome[chrom][mid-50:mid+50]
-	descript = '%s:%d-%d' % (chrom,left+1,right+1)
+	descript = '%s:%d-%d' % (chrom,mid-50,mid+50)
 	peakseq.write('>%s\n%s\n' % (descript,sequence))
+	fullbed.write('%s\t%d\t%d\n' % (chrom,mid-50,mid+50)
 
 
 peaks.close()
 peakseq.close()
+fullbed.close()
 
 
 
