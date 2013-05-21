@@ -40,8 +40,8 @@ refgenome = load_fasta(args.f)
 
 # Open peaks file
 peaks = open(args.p)
-j = args.p.split('/')
-dir = 'cd /'.join(j[:-1])
+#j = args.p.split('/')
+#dir = 'cd /'.join(j[:-1])
 peakseq = open(args.o+'.txt','w')
 fullbed = open(args.o+'.bed','w')
 bin = int(args.b)/2
@@ -51,6 +51,7 @@ for line in peaks:
 	if i == 0:
 		i += 1 # same as i = i + 1
 		continue
+	print line
 	pieces = line.strip().split('\t')
 	chrom = pieces[0]
 	left = int(pieces[1])-1
@@ -59,7 +60,7 @@ for line in peaks:
 	sequence = refgenome[chrom][mid-50:mid+50]
 	descript = '%s:%d-%d' % (chrom,mid-50,mid+50)
 	peakseq.write('>%s\n%s\n' % (descript,sequence))
-	fullbed.write('%s\t%d\t%d\n' % (chrom,mid-50,mid+50)
+	fullbed.write('%s\t%d\t%d\n' % (chrom,mid-50,mid+50))
 
 
 peaks.close()
