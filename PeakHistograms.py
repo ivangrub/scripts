@@ -28,11 +28,11 @@ for line in peak:
 
 chr = chr[0:i][:]
 coord = coord[0:i][:]
-print chr,coord
+print name,chr,coord
 hist = np.matrix((i,100))
 
 for read in bam:
-	chrom = read.getrname
+	chrom = bam.getrname(read.tid)
 	st = read.pos
 	a = chrom == chr
 	c = st > coord[:][0]
