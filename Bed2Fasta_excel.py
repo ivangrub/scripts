@@ -57,7 +57,7 @@ for line in peaks:
 	right = int(pieces[2])-1
 	mid = (right + left)/2
 	enrichment = pieces[3]
-	sequence = refgenome[chrom][mid-100:mid+100]
+	sequence = refgenome[chrom][mid-300:mid+300]
 	descript = '%s:%d-%d' % (chrom,left+1,right+1)
 	peakseq.write('%s\t%s\t%s\n' % (descript,sequence,enrichment))
 
