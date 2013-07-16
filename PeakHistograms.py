@@ -15,37 +15,47 @@ bam = pys.Samfile(args.r,'rb')
 peak = open(args.p,'r')
 hist = open(args.o,'w')
 
-coord = np.zeros((50000,2))
-chr = np.empty([50000,1])
+coord = np.array([])
+chr = np.array([[]])
 name = []
-i = 0
 for line in peak:
 	s = line.strip().split('\t')
 	name.append(":".join(s))
 	chr = np.append(chr,[[s[0]]])
-	coord[i] = [int(s[1]),int(s[2])]
+	coord = np.append(coord,[float(s[1]),float(s[2])])
+
+x = len(coord)
+crd = np.reshape(coord,(x/2,2))
+hist = np.zeros((x/2,100))
+
+i = 0
+for read in bam:
 	i += 1
 
-chr = chr[0:i][:]
-coord = coord[0:i][:]
-print name,chr,coord
-hist = np.matrix((i,100))
-
-for read in bam:
 	chrom = bam.getrname(read.tid)
 	st = read.pos
 	a = chrom == chr
-	c = st > coord[:][0]
-	d = st < coord[:][1]
+	c = st >= crd[:,0]
+	d = st <= crd[:,1]
 	cboth = np.logical_and(c,d)
-	index = np.where(np.logical_and(a,cboth))
 
+	if (i % 100000) == 0:
+		print "%d reads processed" % i
+	try:
+		index = np.where(np.logical_and(a,cboth))[0][0]
+	except IndexError:
+		continue
+	
 	frac_str = read.opt('XP')
 	frac = float(frac_str)
+	try:
+		likeli = int("%.2f" % round(frac))
+		hist[index][int(likeli*100)] += 1
+	except ValueError:
+		hist[index][99] += 1
 
-	likeli = int("%.2f" % round(frac))
-	hist[index][int(likeli*100)] += 1
 
+print 'Printing Text file'
 for i in xrange(np.shape(hist)[0]):
 	hist.write('%s\t%s\n' % (name[i],"\t".join(map(str,hist[i]))))
 
