@@ -2,11 +2,11 @@
 
 import numpy as np
 
-IP = ['chip.TY_ES_PolII.mm9_norandom.m1.mm9_norandom']
+IP = ['CSEM_Pol2','CSEM_PI','CSEM_TBP','Unique_Pol2','Unique_PI','Unique_TBP','Express_Pol2','Express_PI','Express_TBP','NoExpress_Pol2','NoExpress_PI','NoExpress_TBP']
 
 for i in IP:
 	file = open('%s.peaks.bed' % i,'r')
-	newfile = open('broad.%s.peaks.bed' % i,'w')
+	newfile = open('%s.broad.bed' % i,'w')
 	j = 0
 	enrich = []
 	for line in file:
