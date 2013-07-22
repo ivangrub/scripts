@@ -13,7 +13,7 @@ args = parser.parse_args()
 
 bam = pys.Samfile(args.r,'rb')
 peak = open(args.p,'r')
-hist = open(args.o,'w')
+hist_out = open(args.o,'w')
 
 coord = np.array([])
 chr = np.array([[]])
@@ -39,7 +39,7 @@ for read in bam:
 	d = st <= crd[:,1]
 	cboth = np.logical_and(c,d)
 
-	if (i % 100000) == 0:
+	if (i % 1000000) == 0:
 		print "%d reads processed" % i
 	try:
 		index = np.where(np.logical_and(a,cboth))[0][0]
@@ -57,8 +57,8 @@ for read in bam:
 
 print 'Printing Text file'
 for i in xrange(np.shape(hist)[0]):
-	hist.write('%s\t%s\n' % (name[i],"\t".join(map(str,hist[i]))))
+	hist_out.write('%s\t%s\n' % (name[i],"\t".join(map(str,hist[i]))))
 
-hist.close()
+hist_out.close()
 peak.close()
 bam.close()
