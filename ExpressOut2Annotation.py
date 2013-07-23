@@ -2,15 +2,16 @@
 
 from Bio import SeqIO
 import argparse
+import os
 
 parser = argparse.ArgumentParser(description='Create a genome fasta file that will be used to create the bowtie index and used as an input eXpress.')
 parser.add_argument('-g',help = 'Enter the name of the fasta file. The default is ref_mm9.fa',default = 'ref_mm9.fa')
 args = parser.parse_args()
 
-
+dir = os.environ["BOWTIE_INDEXES"]
 file = open('results.xprs')
 fileout = open('results_mod.xprs','w')
-fasta = SeqIO.parse('/Users/ivang/Bioinformatics/bowtie-index/%s' % args.g,'fasta')
+fasta = SeqIO.parse('%s/%s' % (dir,args.g),'fasta')
 
 fastaid = []
 for line in fasta:
