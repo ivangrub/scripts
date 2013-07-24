@@ -11,7 +11,11 @@ for type in annots:
 
 	id = {}
 	file = open("express_%s/results_mod.xprs" % type,'r')
+	i = 0
 	for line in file:
+		if i == 0:
+			i += 1
+			continue
 		s = line.strip().split()
 		id[s[1]] = s[10]
 
