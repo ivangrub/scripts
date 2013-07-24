@@ -16,7 +16,7 @@ list = set()
 for line in peaks:
 	s = line.strip().split()
 	name = '%s:%s-%s' % (s[0],s[1],s[2])
-	list.append(name)
+	list.add(name)
 
 i = 0
 for line in annot:
