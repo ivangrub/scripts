@@ -8,13 +8,10 @@ for type in annots:
 	out = open("GeneChIP_%s_wRPKM.txt" % type,'w')
 	if type == 'cufflinks_denovo':
 		type = 'denovo'
+
 	id = {}
 	file = open("express_%s/results_mod.xprs" % type,'r')
-	i = 0
 	for line in file:
-		if i == 0:
-			i += 1
-			continue
 		s = line.strip().split()
 		id[s[1]] = s[10]
 
