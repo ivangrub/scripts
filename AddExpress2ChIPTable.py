@@ -29,7 +29,6 @@ for type in annots:
 			out.write("%s\n" % header)
 			continue
 		s = line.strip().split()
-		print s
 		try:
 			rpkm = id[s[0]]
 		except KeyError:
