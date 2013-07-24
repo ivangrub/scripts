@@ -29,7 +29,11 @@ for type in annots:
 			out.write("%s\n" % header)
 			continue
 		s = line.strip().split()
-		rpkm = id[s[0]]
+		print s
+		try:
+			rpkm = id[s[0]]
+		except KeyError:
+			rpkm = "NaN"
 		x = "\t".join(s) + "\t" + rpkm
 		out.write("%s\n" % x)
 
