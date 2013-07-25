@@ -29,6 +29,7 @@ for type in annots:
 			out.write("%s\n" % header)
 			continue
 		s = line.strip().split()
+
 		rpkm = id[s[0]]
 		x = "\t".join(s) + "\t" + rpkm[0] +  "\t" + rpkm[1]
 		out.write("%s\n" % x)
