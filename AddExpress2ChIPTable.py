@@ -17,7 +17,7 @@ for type in annots:
 			i += 1
 			continue
 		s = line.strip().split()
-		id[s[1]] = s[10]
+		id[s[1]] = [s[10],s[13]]
 
 	i = 0
 	for line in gene_annot:
@@ -25,12 +25,12 @@ for type in annots:
 			i += 1
 			s = line.strip().split()
 			x = "\t".join(s)
-			header = x+"\t"+"RPKM"
+			header = x+"\t"+"RPKM"+"\t" + "Solvable"
 			out.write("%s\n" % header)
 			continue
 		s = line.strip().split()
 		rpkm = id[s[0]]
-		x = "\t".join(s) + "\t" + rpkm
+		x = "\t".join(s) + "\t" + rpkm[0] +  "\t" + rpkm[1]
 		out.write("%s\n" % x)
 
 	out.close()
