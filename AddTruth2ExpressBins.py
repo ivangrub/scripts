@@ -1,7 +1,7 @@
 #!/usr/bin/env python
 
 results = open('results.xprs')
-out = open('CoordwTruth.txt')
+out = open('CoordwTruth.txt','w')
 
 i = 0
 for line in results:
