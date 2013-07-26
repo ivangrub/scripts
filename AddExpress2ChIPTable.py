@@ -25,7 +25,7 @@ for type in annots:
 			i += 1
 			s = line.strip().split()
 			x = "\t".join(s)
-			header = x+"\t"+"RPKM"+"\t" + "Solvable"
+			header = x+"\t"+"RPKM"+"\t"+"Solvable"
 			out.write("%s\n" % header)
 			continue
 		s = line.strip().split()
@@ -33,13 +33,13 @@ for type in annots:
 			rpkm = id[s[0]]
 		except KeyError:
 			rpkm = ["NaN","NaN"]
-		x = "\t".join(s) + "\t" + rpkm[0] +  "\t" + rpkm[1]
+		x = "\t".join(s)+"\t"+rpkm[0]+"\t"+rpkm[1]
 
 		out.write("%s\n" % x)
 
 	out.close()
 	gene_annot.close()
-
+	file.close()
 
 
 	
