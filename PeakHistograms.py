@@ -4,6 +4,22 @@ import pysam as pys
 import numpy as np
 import argparse
 
+def GetLikelihood(seq,ind):
+	frac_str = seq.opt('XP')
+	frac = float(frac_str)
+	hist[ind][int(frac*100)-1] += 1
+
+def FindOverlap(seq,coords,chromo):
+	chrom = bam.getrname(seq.tid)
+	st = seq.pos
+	a = chrom == chromo
+	c = st >= coords[:,0]
+	d = st <= coords[:,1]
+	cboth = np.logical_and(c,d)
+	try:
+		return np.where(np.logical_and(a,cboth))[0][0]
+	except IndexError:
+		return False
 
 parser = argparse.ArgumentParser(description='Project SAM/BAM format reads back onto the appropriate genome and call significant peaks.')
 parser.add_argument('-r',help ='Read file name. SAM/BAM format.',default = '')
@@ -31,28 +47,15 @@ hist = np.zeros((x/2,100))
 i = 0
 for read in bam:
 	i += 1
-
-	chrom = bam.getrname(read.tid)
-	st = read.pos
-	a = chrom == chr
-	c = st >= crd[:,0]
-	d = st <= crd[:,1]
-	cboth = np.logical_and(c,d)
-
-	if (i % 1000000) == 0:
-		print "%d reads processed" % i
-	try:
-		index = np.where(np.logical_and(a,cboth))[0][0]
-	except IndexError:
-		continue
 	
-	frac_str = read.opt('XP')
-	frac = float(frac_str)
-	try:
-		likeli = int("%.2f" % round(frac))
-		hist[index][int(likeli*100)] += 1
-	except ValueError:
-		hist[index][99] += 1
+	index = FindOverlap(read,crd,chr)
+	if (index == False):
+		continue
+	else:
+		GetLikelihood(read,index)
+
+	if (i % 1000000 == 0):
+		print 'Processed %d Reads' % i
 
 
 print 'Printing Text file'
