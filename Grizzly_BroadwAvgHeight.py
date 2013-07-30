@@ -2,11 +2,11 @@
 
 import numpy as np
 
-IP = ['CSEM_Pol2','CSEM_PI','CSEM_TBP','Unique_Pol2','Unique_PI','Unique_TBP','Express_Pol2','Express_PI','Express_TBP','NoExpress_Pol2','NoExpress_PI','NoExpress_TBP']
+IP = ['Express_ES_GRO','NoExpress_ES_GRO','Unique_ES_GRO','CSEM_ES_GRO']
 
 for i in IP:
 	file = open('%s.peaks.bed' % i,'r')
-	newfile = open('%s.broad.bed' % i,'w')
+	newfile = open('Filtered/%s.filtered.bed' % i,'w')
 	j = 0
 	enrich = []
 	for line in file:
