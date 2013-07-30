@@ -158,7 +158,7 @@ for anno = 1:length(annot)
                 'Express_TBP','Express_PI','Express_GRO','NoExpress_Pol2','NoExpress_TBP','NoExpress_PI','NoExpress_GRO','Unique_Pol2','Unique_TBP','Unique_PI','Unique_GRO',...
                 'CSEM_Pol2','CSEM_TBP','CSEM_PI','CSEM_GRO');
             
-            maxenrich = zeros(1,12);
+            maxenrich = zeros(1,16);
             genesect = zeros(length(peaks),length(type)*length(IP)+4);
             peak = [peaks{2},peaks{3}];
             for j = 1:length(peaks{1})
