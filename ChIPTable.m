@@ -45,7 +45,7 @@ for anno = 1:length(annot)
                 prox = 10000/50;
                 dist = 50000/50;
                 
-                promreg = [coord-prom:coord+prom];
+                promreg = coord-prom:coord+prom;
                 XXprom = promreg > 0 & promreg < length(ind);
                 if sum(XXprom) > 0
                     enrich(j,k) = max(ind(promreg(XXprom)));
@@ -69,7 +69,7 @@ for anno = 1:length(annot)
                     enrich(j,k+2) = NaN;
                 end
 
-                genebody = [coord:tes];
+                genebody = coord:tes;
                 XXgene = genebody > 0 & genebody < length(ind);
                 if sum(XXgene) > 0
                     enrich(j,k+3) = max(ind(genebody(XXgene)));
@@ -221,19 +221,19 @@ for anno = 1:length(annot)
                 maxenrich(1) = max(Express_Pol2.('chip').(chrom{1})(range));
                 maxenrich(2) = max(Express_TBP.('chip').(chrom{1})(range));
                 maxenrich(3) = max(Express_PI.('chip').(chrom{1})(range));
-                maxenrich(4) = max(Express_GRO.("chip").(chrom{1})(range));
+                maxenrich(4) = max(Express_GRO.('chip').(chrom{1})(range));
                 maxenrich(5) = max(NoExpress_Pol2.('chip').(chrom{1})(range));
                 maxenrich(6) = max(NoExpress_TBP.('chip').(chrom{1})(range));
                 maxenrich(7) = max(NoExpress_PI.('chip').(chrom{1})(range));
-                maxenrich(8) = max(NoExpress_GRO.("chip").(chrom{1})(range));
+                maxenrich(8) = max(NoExpress_GRO.('chip').(chrom{1})(range));
                 maxenrich(9) = max(Unique_Pol2.('chip').(chrom{1})(range));
                 maxenrich(10) = max(Unique_TBP.('chip').(chrom{1})(range));
                 maxenrich(11) = max(Unique_PI.('chip').(chrom{1})(range));
-                maxenrich(12) = max(Unique_GRO.("chip").(chrom{1})(range));
+                maxenrich(12) = max(Unique_GRO.('chip').(chrom{1})(range));
                 maxenrich(13) = max(CSEM_Pol2.('chip').(chrom{1})(range));
                 maxenrich(14) = max(CSEM_TBP.('chip').(chrom{1})(range));
                 maxenrich(15) = max(CSEM_PI.('chip').(chrom{1})(range));
-                maxenrich(16) = max(CSEM_GRO.("chip").(chrom{1})(range));
+                maxenrich(16) = max(CSEM_GRO.('chip').(chrom{1})(range));
 
                 
               %  if iscellstr(genelist{1}) == 0
