@@ -9,8 +9,8 @@ def GetLikelihood(seq,ind):
 	frac = float(frac_str)
 	hist[ind][int(frac*100)-1] += 1
 
-def FindOverlap(seq,coords,chromo):
-	chrom = bam.getrname(seq.tid)
+def FindOverlap(seq,coords,chromo,ref):
+	chrom = ref[seq.tid]
 	st = seq.pos
 	a = chrom == chromo
 	c = st >= coords[:,0]
@@ -31,6 +31,7 @@ bam = pys.Samfile(args.r,'rb')
 peak = open(args.p,'r')
 hist_out = open(args.o,'w')
 
+refdict = bam.references
 coord = np.array([])
 chr = np.array([[]])
 name = []
@@ -48,7 +49,7 @@ i = 0
 for read in bam:
 	i += 1
 	
-	index = FindOverlap(read,crd,chr)
+	index = FindOverlap(read,crd,chr,refdict)
 	if (index == False):
 		continue
 	else:
