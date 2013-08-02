@@ -3,6 +3,7 @@
 import pysam as pys
 import numpy as np
 import argparse
+#import cProfile, pstats, io
 #import yappi
 
 def GetLikelihood(seq,ind):
@@ -10,17 +11,20 @@ def GetLikelihood(seq,ind):
 	frac = float(frac_str)
 	hist[ind][int(frac*100)-1] += 1
 
-def FindOverlap(seq,coords,chromo,ref):
+def FindOverlap(seq,coords,chromo,ref,indexmagic):
+	#pr.enable()
 	chrom = ref[seq.tid]
 	st = seq.pos
 	a = chrom == chromo
 	c = st >= coords[:,0]
 	d = st <= coords[:,1]
-	cboth = c == d
-	out = np.where(np.logical_and(a,cboth))[0]
-	
+	cboth = np.logical_and(c,d)
+	out = indexmagic[np.logical_and(a,cboth)]
+	#pr.disable()
+	#pr.print_stats()
 	return out
 	
+
 
 parser = argparse.ArgumentParser(description='Project SAM/BAM format reads back onto the appropriate genome and call significant peaks.')
 parser.add_argument('-r',help ='Read file name. SAM/BAM format.',default = '')
@@ -36,28 +40,38 @@ refdict = bam.references
 coord = np.array([])
 chr = np.array([[]])
 name = []
+counter = np.array([])
+i = 0
 for line in peak:
 	s = line.strip().split('\t')
 	name.append(":".join(s))
 	chr = np.append(chr,[[s[0]]])
 	coord = np.append(coord,[float(s[1]),float(s[2])])
+	counter = np.append(counter,[i])
+	i += 1
 
 peak.close()
 x = len(coord)
 crd = np.reshape(coord,(x/2,2))
 hist = np.zeros((x/2,100))
+
 #yappi.start()
 i = 0
+#pr = cProfile.Profile()
+
 for read in bam:
+
 	i += 1
 	if (i % 1000000 == 0):
 		print 'Processed %d Alignments' % i
 
-	index = FindOverlap(read,crd,chr,refdict)
+	index = FindOverlap(read,crd,chr,refdict,counter)
+
 	if len(index) > 0:
 		GetLikelihood(read,index[0])
 		
 	#yappi.print_stats()
+	
 	
 
 
