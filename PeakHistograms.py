@@ -13,14 +13,14 @@ def GetLikelihood(seq,ind):
 def FindOverlap(seq,coords,chromo,ref):
 	chrom = ref[seq.tid]
 	st = seq.pos
-	a = np.core.defchararray.equal(chrom,chromo)
-	c = np.greater_equal(st,coords[:,0])
-	d = np.less_equal(st,coords[:,1])
-	cboth = np.logical_and(c,d)
-	try:
-		return np.where(np.logical_and(a,cboth))[0][0]
-	except IndexError:
-		return False
+	a = chrom == chromo
+	c = st >= coords[:,0]
+	d = st <= coords[:,1]
+	cboth = c == d
+	out = np.where(np.logical_and(a,cboth))[0]
+	
+	return out
+	
 
 parser = argparse.ArgumentParser(description='Project SAM/BAM format reads back onto the appropriate genome and call significant peaks.')
 parser.add_argument('-r',help ='Read file name. SAM/BAM format.',default = '')
@@ -54,11 +54,8 @@ for read in bam:
 		print 'Processed %d Alignments' % i
 
 	index = FindOverlap(read,crd,chr,refdict)
-	
-	if (index == False):
-		continue
-	else:
-		GetLikelihood(read,index)
+	if len(index) > 0:
+		GetLikelihood(read,index[0])
 		
 	#yappi.print_stats()
 	
