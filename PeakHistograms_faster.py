@@ -42,14 +42,14 @@ i = 0
 for line in peak:
 	s = line.strip().split('\t')
 	name.append(":".join(s))
-	peakdict[":".join(s)] = [i,s[0],float(s[1]),float(s[2])]
+	peakdict[name[i]] = [i,s[0],float(s[1]),float(s[2])]
 	#chr = np.append(chr,[[s[0]]])
 	#coord = np.append(coord,[float(s[1]),float(s[2])])
 	#counter = np.append(counter,[i])
 	i += 1
 
 peak.close()
-x = len(coord)
+x = len(peakdict.keys())
 #crd = np.reshape(coord,(x/2,2))
 hist = np.zeros((x/2,100))
 
