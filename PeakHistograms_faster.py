@@ -9,8 +9,11 @@ import argparse
 def GetLikelihood(seq,ind):
 	frac_str = seq.opt('XP')
 	frac = float(frac_str)
-	print ind,int(frac*100)-1
-	hist[ind][int(frac*100)-1] += 1
+	index = int(frac*100)-1
+	if index < 0
+		hist[ind][0] += 1
+	else:
+		hist[ind][index] += 1
 
 def FindOverlap(seq,peaks,ref):
 	#pr.enable()
