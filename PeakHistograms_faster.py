@@ -55,7 +55,7 @@ for line in peak:
 peak.close()
 x = len(peakdict.keys())
 #crd = np.reshape(coord,(x/2,2))
-hist = np.zeros((x/2,100))
+hist = np.zeros((x,100))
 
 #yappi.start()
 i = 0
