@@ -15,14 +15,10 @@ def FindOverlap(seq,peaks,ref):
 	#pr.enable()
 	chrom = ref[seq.tid]
 	st = seq.pos
-	a = chrom == chromo
-	c = st >= coords[:,0]
-	d = st <= coords[:,1]
-	cboth = np.logical_and(c,d)
-	out = indexmagic[np.logical_and(a,cboth)]
-	#pr.disable()
-	#pr.print_stats()
-	return out
+	for val in peaks.values():
+		if (val[1] == chrom and st >= val[2] and st <= val[3]):
+			return val[0]
+	return False
 	
 
 
@@ -69,8 +65,8 @@ for read in bam:
 
 	index = FindOverlap(read,peakdict,refdict)
 
-	if len(index) > 0:
-		GetLikelihood(read,index[0])
+	if index != False:
+		GetLikelihood(read,index)
 		
 	#yappi.print_stats()
 	
