@@ -10,7 +10,7 @@ def GetLikelihood(seq,ind):
 	frac_str = seq.opt('XP')
 	frac = float(frac_str)
 	index = int(frac*100)-1
-	if index < 0
+	if index < 0:
 		hist[ind][0] += 1
 	else:
 		hist[ind][index] += 1
