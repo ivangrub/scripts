@@ -1,7 +1,7 @@
 #!/usr/bin/env python
 
-results = open('Express_Pol2.results.xprs')
-out = open('Express_Pol2.results.bedgraph','w')
+results = open('results.xprs')
+out = open('/Users/grubisic/Desktop/Express_PI.results.bedgraph','w')
 
 i = 0
 for line in results:
