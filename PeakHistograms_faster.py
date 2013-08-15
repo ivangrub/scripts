@@ -3,20 +3,20 @@
 import pysam as pys
 import numpy as np
 import argparse
-#import cProfile, pstats, io
+import cProfile, pstats, io
 #import yappi
 
 def GetLikelihood(seq,ind):
 	frac_str = seq.opt('XP')
 	frac = float(frac_str)
 	index = int(frac*100)-1
-	if index < 0:
-		hist[ind][0] += 1
-	else:
+	try:
+		hist[ind][index] += 1
+	except IndexError:
 		hist[ind][index] += 1
 
 def FindOverlap(seq,peaks,ref):
-	#pr.enable()
+	pr.enable()
 	chrom = ref[seq.tid]
 	st = seq.pos
 	for val in peaks.values():
@@ -59,7 +59,7 @@ hist = np.zeros((x,100))
 
 #yappi.start()
 i = 0
-#pr = cProfile.Profile()
+pr = cProfile.Profile()
 
 for read in bam:
 
