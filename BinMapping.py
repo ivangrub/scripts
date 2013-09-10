@@ -85,12 +85,12 @@ else:
 
 print 'Load binned header'
 conv = pys.Samfile('%s/Header_%s_%s_%s.sam' % (path,args.g,args.b,args.l),'r')
-if args.r is '-':
-	outbam = pys.Samfile('%s.bam' % args.o,'wb',template = infile)
+if args.o is '-':
+	convbam = pys.Samfile('%s' % args.o,'wb',template = conv)
+else:
+	convbam = pys.Samfile('%s_converted.bam' % args.o,'wb',template = conv)
 
 print 'Create template for converted BAM'
-convbam = pys.Samfile('%s_converted.bam' % args.o,'wb',template = conv)
-
 #bindict = {}
 #index = 0
 #for ref in conv.header['SQ']:
@@ -116,7 +116,7 @@ for line in infile:
 	if line.is_unmapped:
 		continue
 	if args.r is '-':
-		outbam.write(line)
+		convbam.write(line)
 	headlist = gen2bin(infile,convbam,line,chrindex,binning,headlist,count)
 	count += 1
 
